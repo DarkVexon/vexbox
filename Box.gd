@@ -21,6 +21,7 @@ var special = 0
 var heldStr = ""
 var secondStr = ""
 var anything
+var loopTriggered = false
 static var alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 static var outlineClosed = preload("res://boxImgs/outlineClosed.png")
@@ -76,11 +77,35 @@ var boxScene = preload("res://Box.tscn")
 
 func setupSpecial():
 	match id:
+		"bowling":
+			set_custom_num(0)
+		"flower":
+			set_custom_num(8 if badgeEquipped("transmogrifier") else 4)
+		"queen":
+			set_custom_num(3)
+		"winseeker":
+			var value = 0
+			for box in get_adjacent_boxes(false, false):
+				if box.tooltipText.contains("win"):
+					value += 1
+			clearWidgets()
+			var counter = Label.new()
+			counter.text = str(value)
+			addWidget(counter)
+		"sweeper":
+			var value = 0
+			for box in get_adjacent_boxes(false, false):
+				if box.tooltipText.contains("lose"):
+					value += 1
+			clearWidgets()
+			var counter = Label.new()
+			counter.text = str(value)
+			addWidget(counter)
 		"eye":
 			var direction = main.rng.randi_range(0, 5)
 			special = direction
 			clearWidgets()
-			var newArrow = TextureRect.new();
+			var newArrow = TextureRect.new()
 			newArrow.texture = load("res://uiImgs/eyelook.png")
 			newArrow.size = Vector2(44, 44)
 			newArrow.pivot_offset = Vector2(22, 22)
@@ -92,12 +117,94 @@ func setupSpecial():
 			newArrow.offset_right = -22
 			newArrow.offset_top = -22
 			newArrow.offset_bottom = -22
-			add_child(newArrow)
+			addWidget(newArrow)
 			newArrow.rotation = special * 45
-			addedWidgets.append(newArrow)
+		"turret":
+			var direction = main.rng.randi_range(0, 5)
+			special = direction
+			clearWidgets()
+			var newArrow = TextureRect.new()
+			newArrow.texture = load("res://uiImgs/turretlook.png")
+			newArrow.size = Vector2(44, 44)
+			newArrow.pivot_offset = Vector2(22, 22)
+			newArrow.anchor_left = 0.5
+			newArrow.anchor_right = 0.5
+			newArrow.anchor_top = 0.5
+			newArrow.anchor_bottom = 0.5
+			newArrow.offset_left = -22
+			newArrow.offset_right = -22
+			newArrow.offset_top = -22
+			newArrow.offset_bottom = -22
+			addWidget(newArrow)
+			newArrow.rotation = special * 45
+
+static var rarityColors = [Color(0.9, 0.9, 0.9, 1), Color(0.3, 1.0, 0.3, 1), Color(0.2, 0.2, 1.0, 1), Color(1, 0.2, 1, 1), Color(1, 0.5, 0, 1)]
 
 func on_open() -> void:
 	match id:
+		"static":
+			var valids = []
+			for box in main.boxes:
+				if !box.destroyed and box != self:
+					valids.append(box)
+			if valids.size() > 0:
+				valids.pick_random().destroyBox()
+			main.reveal_random()
+			valids.clear()
+			for box in main.boxes:
+				if !box.destroyed and box != self:
+					valids.append(box)
+			if valids.size() > 0:
+				var toChange = valids.pick_random()
+				var okIds = []
+				for i in main.all_boxes:
+					if i != toChange.id and i != "max":
+						okIds.append(i)
+				if okIds.size() > 0:
+					toChange.loadType(okIds.pick_random())
+			close_random_other()
+		"pinnacle":
+			var i = 0
+			var full = 0
+			for row in main.rows:
+				var validRow = false
+				var fullyOpen = true
+				for box in row:
+					if !box.destroyed:
+						validRow = true
+						if !box.open:
+							fullyOpen = false
+				if validRow:
+					i += 1
+					if fullyOpen:
+						full += 1
+					if i == 3 and full == 3:
+						lg("The top 3 rows are fully open! You win!")
+						win()
+				if i > 3:
+					break
+		"deck":
+			var valids = []
+			for box in main.boxes:
+				if !box.revealed and !box.destroyed and box.tooltipText.contains("win"):
+					valids.append(box)
+			if valids.size() > 0:
+				valids.pick_random().revealBox()
+		"gift":
+			main.add_status(StatusTypes.GOLD, 3)
+			for i in 2:
+				main.reveal_random()
+			close_random_other()
+		"cosmetic":
+			for box in main.boxes:
+				if (box.id == "flying" or box.id == "stellar") and !box.destroyed:
+					box.revealBox()
+		"costly":
+			if !main.has_status(StatusTypes.GOLD):
+				lg("No money! Costly Box makes you lose!")
+				lose()
+		"capsule":
+			main.add_status(StatusTypes.CAPSULE, 1)
 		"multiwarp":
 			for i in 2:
 				var valids = []
@@ -199,7 +306,7 @@ func on_open() -> void:
 			set_custom_num(20)
 			fNum = 1
 		"quick":
-			set_custom_num(5)
+			set_custom_num(3)
 			fNum = 1
 		"clone":
 			set_custom_num(3)
@@ -216,18 +323,18 @@ func on_open() -> void:
 				if box.id == "winner" and !box.destroyed:
 					var newArrow = TextureRect.new();
 					newArrow.texture = arrowImg
-					newArrow.size = Vector2(44, 44)
-					newArrow.pivot_offset = Vector2(22, 22)
+					newArrow.size = Vector2(44 * main.boxesScale, 44* main.boxesScale)
+					newArrow.pivot_offset = Vector2(22* main.boxesScale, 22* main.boxesScale)
 					newArrow.anchor_left = 0.5
 					newArrow.anchor_right = 0.5
 					newArrow.anchor_top = 0.5
 					newArrow.anchor_bottom = 0.5
-					newArrow.offset_left = -22
-					newArrow.offset_right = -22
-					newArrow.offset_top = -22
-					newArrow.offset_bottom = -22
+					newArrow.offset_left = -22* main.boxesScale
+					newArrow.offset_right = -22* main.boxesScale
+					newArrow.offset_top = -22* main.boxesScale
+					newArrow.offset_bottom = -22* main.boxesScale
 					add_child(newArrow)
-					newArrow.rotation = global_position.direction_to(box.position).angle()
+					newArrow.rotation = position.direction_to(box.position).angle()
 					addedWidgets.append(newArrow)
 		"confidential":
 			var count = 0
@@ -434,6 +541,25 @@ func on_open() -> void:
 				lose()
 		"music":
 			main.get_node("MusicPlayer").play()
+		"loot":
+			var maxOpens = -1
+			for id in main.all_boxes:
+				if main.getBoxStat(id, "opens") > maxOpens:
+					maxOpens = main.getBoxStat(id, "opens")
+			for box in main.boxes:
+				var colorIdx
+				var opens = main.getBoxStat(box.id, "opens")
+				if opens >= maxOpens * 0.9:
+					colorIdx = 4
+				elif opens >= maxOpens * 0.7:
+					colorIdx = 3
+				elif opens >= maxOpens * 0.5:
+					colorIdx = 2
+				elif opens >= maxOpens * 0.3:
+					colorIdx = 1
+				else:
+					colorIdx = 0
+				box.get_node("Outline").modulate = rarityColors[colorIdx]
 		"onegold":
 			main.add_status(StatusTypes.GOLD, 1)
 		"paint":
@@ -478,7 +604,7 @@ func on_open() -> void:
 			heldStr = word
 			secondStr = ""
 			for i in heldStr:
-				if heldStr[i] == " ":
+				if i == " ":
 					secondStr = secondStr + " "
 				else:
 					secondStr = secondStr + "_"
@@ -794,13 +920,137 @@ func on_open() -> void:
 		"ritual":
 			set_custom_num(0)
 		"madscientist":
-			set_custom_num(12)
+			set_custom_num(18)
 		"searchlight":
 			set_custom_num(1)
 	pass
 
+func is_upleft_from_me(other):
+	return other.row < row and other.col == col
+
+func is_upright_from_me(other):
+	return other.row < row and other.col == (col - (row - other.row))
+
+func is_left_from_me(other):
+	return other.row == row and other.col > col
+
+func is_right_from_me(other):
+	return other.row == row and other.col < col
+
+func is_downleft_from_me(other):
+	return other.row > row and col == (other.col - (other.row - row))
+
+func is_downright_from_me(other):
+	return other.row > row and col == other.col
+
+func on_other_box_opened_prio_first(box: Box) -> void:
+	match id:
+		"playable":
+			var valids = get_adjacent_boxes(false, false)
+			swapWith(valids.pick_random())
+		"monster":
+			var adjacents = get_adjacent_boxes(false, false)
+			if !adjacents.size() == 0:
+				var toEat = adjacents.pick_random()
+				lg("Consuming Box is consuming a box and moving!")
+				toEat.destroyBox()
+				if toEat.id == "food":
+					lg("Consuming Box ate a Food Box! You win!")
+					win()
+				swapWith(toEat)
+
+func on_other_box_opened_prio_last(box: Box) -> void:
+	match id:
+		"conveyor":
+			var reals = []
+			for other in main.rows[row]:
+				if !other.destroyed:
+					reals.append(other)
+			for i in range(1, reals.size()):
+				reals[i].swapWith(reals[i-1])
+
 func on_other_box_opened(box: Box) -> void:
 	match id:
+		"bowling":
+			var count = 0
+			for other in main.rows[box.row]:
+				if !other.destroyed:
+					count += 1
+			set_custom_num(customNum + count)
+			if customNum == 300:
+				lg("Perfect game! You win!")
+				win()
+		"queen":
+			if is_upleft_from_me(box) or is_upright_from_me(box) or is_left_from_me(box) or is_right_from_me(box) or is_downleft_from_me(box) or is_downright_from_me(box):
+				if customNum > 0:
+					set_custom_num(customNum-1)
+					if customNum == 0:
+						lg("Queen Box makes you lose!")
+						lose()
+		"turret":
+			match (special):
+				0:
+					for i in range(col-1, -1, -1):
+						var toHit = main.rows[row][i]
+						if !toHit.destroyed:
+							lg("Turret Box fires!")
+							toHit.destroyBox()
+							break
+				1:
+					for i in range(row+1, main.unlockedRows):
+						var toHit = main.rows[i][col]
+						if !toHit.destroyed:
+							lg("Turret Box fires!")
+							toHit.destroyBox()
+							break
+				2:
+					for i in range(row+1, main.unlockedRows):
+						var toHit = main.rows[i][col + (i-row)]
+						if !toHit.destroyed:
+							lg("Turret Box fires!")
+							toHit.destroyBox()
+							break
+				3:
+					for i in range(col+1, main.rows[row].size()):
+						var toHit = main.rows[row][i]
+						if !toHit.destroyed:
+							lg("Turret Box fires!")
+							toHit.destroyBox()
+							break
+				4:
+					for i in range(row-1, -1, -1):
+						if main.rows[i].size() > col:
+							var toHit = main.rows[i][col]
+							if !toHit.destroyed:
+								lg("Turret Box fires!")
+								toHit.destroyBox()
+								break
+				5:
+					for i in range(row-1, -1, -1):
+						if col-(row-i) >= 0:
+							var toHit = main.rows[i][col-(row-i)]
+							if !toHit.destroyed:
+								lg("Turret Box fires!")
+								toHit.destroyBox()
+								break
+			special += 1
+			special %= 6
+			clearWidgets()
+			var newArrow = TextureRect.new();
+			newArrow.texture = load("res://uiImgs/turretlook.png")
+			newArrow.size = Vector2(44, 44)
+			newArrow.pivot_offset = Vector2(22, 22)
+			newArrow.anchor_left = 0.5
+			newArrow.anchor_right = 0.5
+			newArrow.anchor_top = 0.5
+			newArrow.anchor_bottom = 0.5
+			newArrow.offset_left = -22
+			newArrow.offset_right = -22
+			newArrow.offset_top = -22
+			newArrow.offset_bottom = -22
+			add_child(newArrow)
+			newArrow.rotation = special * 45
+			addedWidgets.append(newArrow)
 		"eye":
 			special += 1
 			special %= 6
@@ -820,9 +1070,6 @@ func on_other_box_opened(box: Box) -> void:
 			add_child(newArrow)
 			newArrow.rotation = special * 45
 			addedWidgets.append(newArrow)
-		"playable":
-			var valids = get_adjacent_boxes(false, false)
-			swapWith(valids.pick_random())
 		"bigbomb":
 			if customNum > 0:
 				set_custom_num(customNum-1)
@@ -1086,16 +1333,12 @@ func on_other_box_opened(box: Box) -> void:
 			if valids.size() > 0:
 				valids.pick_random().loadType("locust")
 		"ritual":
-			set_custom_num(customNum+1)
+			if customNum <= 0:
+				set_custom_num(1)
+			else:
+				set_custom_num(customNum+1)
 		"pet":
 			swapWith(main.last_opened)
-		"monster":
-			var adjacents = get_adjacent_boxes(false, false)
-			if !adjacents.size() == 0:
-				var toEat = adjacents.pick_random()
-				lg("Consuming Box is consuming a box and moving!")
-				toEat.destroyBox()
-				swapWith(toEat)
 		"searchlight":
 			if !main.last_opened.was_revealed_when_opened and customNum > 0:
 				set_custom_num(customNum-1)
@@ -1106,7 +1349,7 @@ func on_other_box_opened(box: Box) -> void:
 func on_other_box_opened_immediate(box: Box) -> void:
 	match id:
 		"stellar":
-			if open:
+			if open and !destroyed:
 				for i in 3:
 					var newStar = starScene.instantiate()
 					newStar.global_position.x = box.global_position.x
@@ -1116,6 +1359,12 @@ func on_other_box_opened_immediate(box: Box) -> void:
 
 func can_use() -> bool:
 	match id:
+		"quilt":
+			var canDo = true
+			for box in get_tworange_boxes():
+				if !box.open and !box.destroyed:
+					canDo = false
+			return canDo
 		"goldenbug":
 			return true
 		"puzzle":
@@ -1216,6 +1465,9 @@ func can_use() -> bool:
 
 func on_self_clicked() -> void:
 	match id:
+		"quilt":
+			lg("Hexagonal perfect tapestry: you win!")
+			win()
 		"goldenbug":
 			var threshold = 1
 			var weapons = ["cannon", "sword", "wand"]
@@ -1223,7 +1475,7 @@ func on_self_clicked() -> void:
 				if weapons.has(box.id) and box.open and !box.destroyed:
 					threshold += 2
 			var roll = main.rng.randi_range(0, 9)
-			if roll >= threshold:
+			if threshold >= roll:
 				lg("Lucky! You've beaten the Monster Box!")
 				win()
 			else:
@@ -1434,6 +1686,15 @@ func on_destroy() -> void:
 			if open:
 				lg("The Egg has hatched!")
 				win()
+		"loot":
+			if open:
+				var stopMusic = true
+				for box in main.boxes:
+					if box != self and box.id == "loot" and box.open and !box.destroyed:
+						stopMusic = false
+				if stopMusic:
+					for box in main.boxes:
+						box.get_node("Outline").modulate = Color(1, 1, 1, 1)
 		"music":
 			if open:
 				var stopMusic = true
@@ -1519,6 +1780,15 @@ func on_type_about_to_change(_new_type: String) -> void:
 			if open:
 				lg("The Butterfly has evolved!")
 				win()
+		"loot":
+			if open:
+				var stopMusic = true
+				for box in main.boxes:
+					if box != self and box.id == "loot" and box.open and !box.destroyed:
+						stopMusic = false
+				if stopMusic:
+					for box in main.boxes:
+						box.get_node("Outline").modulate = Color(1, 1, 1, 1)
 		"music":
 			if open:
 				var stopMusic = true
@@ -1540,11 +1810,12 @@ func on_type_changed(old_type: String) -> void:
 func on_other_box_type_changed(box: Box) -> void:
 	match id:
 		"flower":
-			if open and !destroyed and box != self:
+			if open and !destroyed and box != self and customNum > 0:
 				modStat("timesActivated", 1)
 				lg("Flower Box closes and reveals the transformed box!")
 				box.closeBox()
 				box.revealBox()
+				set_custom_num(customNum-1)
 		"madscientist":
 			if open and !destroyed and customNum > 0:
 				set_custom_num(customNum-1)
@@ -1559,6 +1830,15 @@ func on_close() -> void:
 	match id:
 		"alphabet":
 			arr.clear()
+		"loot":
+			if open:
+				var stopMusic = true
+				for box in main.boxes:
+					if box != self and box.id == "loot" and box.open and !box.destroyed:
+						stopMusic = false
+				if stopMusic:
+					for box in main.boxes:
+						box.get_node("Outline").modulate = Color(1, 1, 1, 1)
 		"music":
 			var stopMusic = true
 			for box in main.boxes:
@@ -1579,6 +1859,8 @@ func destroyBox():
 		if !can_destroy(false):
 			return
 		main.play_sfx(SFXTypes.DESTROY)
+		if box_is_open("logic") and !revealed:
+			revealBox()
 		if revealed and !main.big_bossfight and special != 111:
 			lg(getName() + " was destroyed!")
 		destroyed = true
@@ -1643,11 +1925,6 @@ func loadType(new_type: String) -> void:
 
 func revealBox():
 	if !destroyed:
-		if get_box_counter("inky") > 0:
-			for box in main.boxes:
-				if box.id == "inky" and box.customNum > 0 and box.open and !box.destroyed:
-					box.set_custom_num(box.customNum-1)
-					break
 		var was_already_revealed = revealed
 		if !was_already_revealed and get_box_counter("inky") > 0:
 			for box in main.boxes:
@@ -1768,6 +2045,7 @@ static var cursorNo = preload("res://cursorImgs/cursorNo.png")
 static var cursorOpen = preload("res://cursorImgs/cursorOpen.png")
 static var cursorNormal = preload("res://cursorImgs/cursorNormal.png")
 static var cursorPortal = preload("res://cursorImgs/cursorPortal.png")
+static var cursorCapsule = preload("res://cursorImgs/cursorCapsule.png")
 
 func updateCursorForMe():
 	if !Input.is_action_pressed("pan"):
@@ -1783,6 +2061,9 @@ func updateCursorForMe():
 				if revealed and main.has_status(StatusTypes.TRANSMOG):
 					normCursor = false
 					Input.set_custom_mouse_cursor(cursorTransmog)
+				elif revealed and main.has_status(StatusTypes.CAPSULE):
+					normCursor = false
+					Input.set_custom_mouse_cursor(cursorCapsule)
 				else:
 					if !open:
 						if main.has_status(StatusTypes.SAFETY) and !revealed:
@@ -1843,8 +2124,6 @@ func special_process(delta):
 					main.addVfx(newSmiley)
 
 func get_tworange_boxes():
-	print(row)
-	print(col)
 	var result = []
 	var myRow = main.rows[row]
 	# left one
@@ -1963,7 +2242,7 @@ func canOpen():
 			if box.open:
 				can_open = true
 				break
-	if box_is_open("fraidy"):
+	if get_box_counter("fraidy") > 0:
 		var any_revealed_box = false
 		for box in main.boxes:
 			if box.revealed and !box.destroyed and !box.open:
@@ -1977,26 +2256,22 @@ func canOpen():
 		if box.id == "eye" and box.open and !box.destroyed:
 			match box.special:
 				0:
-					if box.col == col:
+					if box.is_right_from_me(self):
 						can_open = false
 				1:
-					if box.row > row:
-						var rowDiff = box.row - row
-						if col == box.col - rowDiff:
-							can_open = false
+					if box.is_downright_from_me(self):
+						can_open = false
 				2:
-					if box.row == row and box.col > col:
+					if box.is_downleft_from_me(self):
 						can_open = false
 				3:
-					if box.row < row and box.col == col:
+					if box.is_left_from_me(self):
 						can_open = false
 				4:
-					if box.row < row:
-						var rowDiff = row - box.row
-						if col == box.col + rowDiff:
-							can_open = false
+					if box.is_upleft_from_me(self):
+						can_open = false
 				5:
-					if box.row == row and box.col > col:
+					if box.is_upright_from_me(self):
 						can_open = false
 	for box in get_adjacent_boxes(false, false):
 		if box.id == "ice" and box.customNum > 0 and !box.destroyed and box.open:
@@ -2032,18 +2307,21 @@ func swapWith(other):
 	var oldOriginY = origPosY
 	var oldRow = row
 	var oldCol = col
+	var oldIndex = main.boxes.find(self)
 	global_position = other.global_position
 	origPosX = other.origPosX
 	origPosY = other.origPosY
 	row = other.row
 	col = other.col
 	main.rows[other.row][other.col] = self
+	main.boxes[main.boxes.find(other)] = self
 	other.global_position = oldPos
 	other.origPosX = oldOriginX
 	other.origPosY = oldOriginY
 	other.row = oldRow
 	other.col = oldCol
 	main.rows[oldRow][oldCol] = other
+	main.boxes[oldIndex] = other
 
 func _on_button_pressed() -> void:
 	if main.gameRunning && !main.awaiting_post_click and !main.big_bossfight:
@@ -2065,6 +2343,15 @@ func _on_button_pressed() -> void:
 				var typeToAdd = valids.pick_random()
 				loadType(typeToAdd)
 				main.change_status_amount(StatusTypes.TRANSMOG, -1)
+			elif main.has_status(StatusTypes.CAPSULE) and revealed:
+				for i in 3:
+					var valids = []
+					for box in main.boxes:
+						if box.id != id and !box.destroyed and !box.revealed:
+							valids.append(box)
+					if valids.size() > 0:
+						valids.pick_random().loadType(id)
+				main.change_status_amount(StatusTypes.CAPSULE, -1)
 			else:
 				if !open:
 					if main.has_status(StatusTypes.SAFETY):
@@ -2127,6 +2414,8 @@ func postTransform():
 			"compass":
 				on_open()
 			"music":
+				on_open()
+			"loot":
 				on_open()
 	pass
 

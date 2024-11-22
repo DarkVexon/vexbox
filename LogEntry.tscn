@@ -3,10 +3,11 @@
 [ext_resource type="Script" path="res://log_entry.gd" id="1_ajx3b"]
 
 [node name="LogEntry" type="Control"]
-custom_minimum_size = Vector2(0, 35)
+custom_minimum_size = Vector2(450, 35)
 layout_mode = 3
 anchors_preset = 0
-offset_bottom = 5.0
+offset_right = 450.0
+offset_bottom = 35.0
 script = ExtResource("1_ajx3b")
 
 [node name="Label" type="Label" parent="."]
@@ -23,3 +24,6 @@ offset_right = 30.0
 offset_bottom = 30.0
 expand_mode = 1
 stretch_mode = 4
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

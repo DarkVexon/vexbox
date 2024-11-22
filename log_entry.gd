@@ -13,7 +13,13 @@ func updateTooltipForMe():
 	get_parent().get_parent().get_parent().get_node("Tooltip").setup(name, "", desc)
 
 func _process(delta: float) -> void:
-	if ID != null:
-		var mousePos = get_viewport().get_mouse_position()
-		if mousePos.x >= global_position.x and mousePos.x <= global_position.x + 300 and mousePos.y >= global_position.y and mousePos.y <= global_position.y + 30:
-			updateTooltipForMe()
+	if ID != null and hovered:
+		updateTooltipForMe()
+
+var hovered = false
+
+func _on_mouse_entered() -> void:
+	hovered = true
+
+func _on_mouse_exited() -> void:
+	hovered = false

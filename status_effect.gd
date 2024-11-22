@@ -28,6 +28,8 @@ func load_image():
 			$Image.texture = load("res://statusImgs/transmog.png")
 		StatusTypes.SWAP:
 			$Image.texture = load("res://statusImgs/swap.png")
+		StatusTypes.CAPSULE:
+			$Image.texture = load("res://statusImgs/capsule.png")
 
 func setupText():
 	match (type):
@@ -45,6 +47,8 @@ func setupText():
 			$Description.text = "The next " + str(value) + " times you click a revealed box, transform it into a random box."
 		StatusTypes.SWAP:
 			$Description.text = "The next " + str(value) + " times you click a box, swap it with the Portal Box."
+		StatusTypes.CAPSULE:
+			$Description.text = "The next " + str(value) + " times you click a revealed box, transform 3 unrevealed boxes into copies of it."
 
 func on_click():
 	if !justApplied:

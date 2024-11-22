@@ -89,7 +89,7 @@ func load_save():
 	var data = json.data
 	for key in data.keys():
 			set(key, data[key])
-	unlockedRows = 17
+	unlockedRows = 18
 	unlockedBoxes = (unlockedRows * (unlockedRows + 1)) / 2
 	$NumWinsText.text = ": " + str(wins)
 	$WinstreakText.text = "Winstreak: " + str(winstreak)
@@ -151,6 +151,7 @@ func startGame():
 		$StatusList.remove_child(node)
 		node.queue_free()
 	var list = []
+
 	for i in unlockedBoxes:
 		list.append(all_boxes[i])
 	randomize()
@@ -167,10 +168,12 @@ func startGame():
 	while not list.is_empty():
 		var instance = boxScene.instantiate()
 		var toAdd = list.pop_front()
-		#if row == 0:
-			#toAdd = "monster"
+		#if column == 5 and row == 5:
+			#toAdd = "conveyor"
+		#if column == row:
+			#toAdd = "serpent"
 		#else:
-			#toAdd = "empty"
+			#toAdd = "demolition"
 		instance.loadBox(toAdd, row, column)
 		$BoxesHolder.add_child(instance)
 		boxes.append(instance)
@@ -221,8 +224,23 @@ func trigger_on_click():
 	for status in $StatusList.get_children():
 		status.on_click()
 	for box in boxes:
-		if box.open and not box.just_opened and not box.destroyed and gameRunning and box != last_opened:
+		box.loopTriggered = false
+	for box in boxes:
+		if box.open and not box.just_opened and not box.destroyed and gameRunning and box != last_opened and !box.loopTriggered:
+			box.on_other_box_opened_prio_first(last_opened)
+			box.loopTriggered = true
+	for box in boxes:
+		box.loopTriggered = false
+	for box in boxes:
+		if box.open and not box.just_opened and not box.destroyed and gameRunning and box != last_opened and !box.loopTriggered:
 			box.on_other_box_opened(last_opened)
+			box.loopTriggered = true
+	for box in boxes:
+		box.loopTriggered = false
+	for box in boxes:
+		if box.open and not box.just_opened and not box.destroyed and gameRunning and box != last_opened and !box.loopTriggered:
+			box.on_other_box_opened_prio_last(last_opened)
+			box.loopTriggered = true
 	for box in boxes:
 		box.just_opened = false
 	for box in boxes:

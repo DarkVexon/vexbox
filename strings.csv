@@ -152,7 +152,7 @@ box.crumbling.desc;After you open a box, destroy the top box (right to left).
 box.tripleplay.name;Three Box
 box.tripleplay.desc;On Open: If this is the third time you've opened this box, win.
 box.food.name;Food Box
-box.food.desc;On Click: Eat this box, destroying it. Yummy!
+box.food.desc;On Click: Eat this box, destroying it. If this is destroyed by Consuming Box, win.
 box.allseeingeye.name;All Seeing Box
 box.allseeingeye.desc;On Open: Reveal 10 random boxes. After you open 3 boxes, lose.
 box.waterfall.name;Waterfall Box
@@ -210,7 +210,7 @@ box.exp.desc;On Open: After you open 9 unrevealed boxes, win.
 box.ivy.name;Ivy Box
 box.ivy.desc;On Open: Transform a random box above this into an Ivy Box.
 box.flower.name;Flower Box
-box.flower.desc;Whenever a box is transformed, reveal and close it.
+box.flower.desc;The next 4 times a box is transformed, reveal and close it.
 box.finalboss.name;Strange Box
 box.finalboss.desc;On Open: 1/13 chance to ...?
 box.compass.name;Compass Box
@@ -272,7 +272,7 @@ box.lonely.desc;On Open: If this box isn't surrounded, lose.
 box.underrated.name;Underrated Box
 box.underrated.desc;On Open: Reveal the unrevealed box you've opened the least.
 box.quick.name;Quick Box
-box.quick.desc;For the next 5 seconds, opening boxes reveals a random box.
+box.quick.desc;For the next 3 seconds, opening boxes reveals a random box.
 box.quiz.name;Quiz Box
 box.quiz.desc;Chooses a box. See an additional letter every 3 opens. If you open that box, win!
 box.question.name;Question Box
@@ -287,14 +287,14 @@ box.locust.name;Locust Box
 box.locust.desc;After you open a box, transform a random box into a Locust Box.
 box.ritual.name;Ritual Box
 box.ritual.desc;After you open a box, gains a charge. On Click: Destroy this and reveal random boxes equal to its charge.
-box.pet.name;Pet Box
-box.pet.desc;After you open a box, swaps places with the opened box.
+box.capsule.name;Capsule Box
+box.capsule.desc;On Open: The next time you click a revealed box, transform 3 random unrevealed boxes into copies of it.
 box.inky.name;Inky Box
 box.inky.desc;Prevent the next 3 times you'd reveal a box.
-box.madscienentist.name;Mad Scientist Box
-box.madscientist.desc;After you transform 12 boxes, win.
+box.madscientist.name;Mad Scientist Box
+box.madscientist.desc;After you transform 18 boxes, win.
 box.patterned.name;Patterned Box
-box.patterned.desc;On Open: For each adjacent box, transform 4 random boxes into copies of it.
+box.patterned.desc;On Open: For each adjacent box, transform 4 random unrevealed boxes into copies of it.
 box.playable.name;Rogue Box
 box.playable.desc;After you open a box, swaps with an adjacent box. If this is destroyed or transformed while open, you lose.
 box.bigbomb.name;Big Bomb Box
@@ -303,7 +303,7 @@ box.puzzle.name;Puzzle Box
 box.puzzle.desc;On Click: Destroy 7 random boxes. The 7th time you use this, win instead.
 box.multiwarp.name;Multiwarp Box
 box.multiwarp.desc;On Open: Transform 2 random other revealed boxes into Portal Boxes.
-box.monster.name;Nomquox, Box Eater
+box.monster.name;Consuming Box
 box.monster.desc;After you open a box, destroy a random adjacent box and swap places with it.
 box.searchlight.name;Searchlight Box
 box.searchlight.desc;The next time you open an unrevealed box, reveal all boxes adjacent to it.
@@ -313,12 +313,6 @@ box.eye.name;Eyebox
 box.eye.desc;Looks a different direction each time you open a box. You can't open boxes it's looking at.
 box.loot.name;Loot Box
 box.loot.desc;Color opened box outlines based on the amount of times you've opened them!
-box.laser.name;Laser Box
-box.laser.desc;Fires a laser. Click to rotate. (That's not an On Click!)
-box.mirror.name;Mirror Box
-box.mirror.desc;Reflects lasers. Click to rotate. (That's not an On Click!)
-box.prism.name;Prism Box
-box.prism.desc;If this is hit by a laser, you win.
 box.turret.name;Turret Box
 box.turret.desc;After you open a box, destroy the box this is pointing at, then spin.
 box.winseeker.name;Winseeker Box
@@ -328,19 +322,25 @@ box.sweeper.desc;Displays the number of adjacent boxes with "lose" in their text
 box.costly.name;Costly Box
 box.costly.desc;On Open: If you have no Gold, lose.
 box.conveyor.name;Conveyor Box
-box.conveyor.desc;After you open a box, rotate all boxes in this row to the right.
-box.orb.name;Orb Box
-box.orb.desc;On Open: 1/13 chance to ..?
+box.conveyor.desc;After you open a box, shift all boxes in this row to the left.
 box.cosmetic.name;Cosmetic Box
-box.cosmetic.desc;On Open: Reveal the Stellar, Music, and Flying boxes.
+box.cosmetic.desc;On Open: Reveal the Stellar and Flying boxes.
 box.queen.name;Queen Box
 box.queen.desc;After you open three boxes in any direction from this, lose.
-box.tophat.name;Top Hat Box
-box.tophat.desc;On Open: Your cursor gains a top hat!
+box.gift.name;Gift Box
+box.gift.desc;On Open: Gain 3 Gold. Reveal 2 random boxes. Close 1 random other box.
 box.deck.name;Deck Box
 box.deck.desc;On Open: Reveal a random box with "win" in its text.
 box.pinnacle.name;Pinnacle Box
 box.pinnacle.desc;On Open: If the top 3 rows are all open, you win.
+box.bowling.name;Bowling Box
+box.bowling.desc;After you open a box, add the number of boxes in its row to this. If it equals exactly 300, win.
+box.static.name;Static Box
+box.static.desc;On Open: Destroy a random box. Reveal a random box. Transform a random box randomly. Close a random box.
+box.quilt.name;Quilt Box
+box.quilt.desc;On Click: If all boxes within 2 spaces are open, win.
+box.logic.name;Logical Box
+box.logic.desc;Before a box is destroyed, reveal it. (Check the log to see!)
 badge.reveal.name;Reveal One
 badge.reveal.desc;Start Of Run: Reveal a random box.
 badge.reveal.unlock;Win 5 times.
@@ -411,7 +411,7 @@ badge.badgeboxup3.name;Badge Box: Reveal Mod
 badge.badgeboxup3.desc;The Badge Box now transforms 3 random closed boxes into Badge Boxes.
 badge.badgeboxup3.unlock;Open the Badge Box 50 times.
 badge.transmogrifier.name;Transmog Master
-badge.transmogrifier.desc;The Transmog and Dice boxes gain double uses.
+badge.transmogrifier.desc;The Transmog, Flower, and Dice boxes gain double uses.
 badge.transmogrifier.unlock;Transform 500 boxes.
 badge.flyingbutterfly.name;Flying Butterflies
 badge.flyingbutterfly.desc;Whenever you open a Butterfly Box, transform a random box in the row above into a Butterfly Box.
