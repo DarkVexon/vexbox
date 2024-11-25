@@ -58,7 +58,7 @@ box.sacrifice.desc;On Click: Destroy a random box, then reveal a random box. Usa
 box.income.name;Bank Box
 box.income.desc;Whenever you open another box, 1/3 chance to gain 1 Gold.
 box.boss.name;Boss Box
-box.boss.desc;On Open: After you open 13 boxes, win.
+box.boss.desc;After you open 13 boxes, win.
 box.shy.name;Shy Box
 box.shy.desc;Whenever you open another box, 1/3 chance to close this.
 box.mimic.name;Mimic Box
@@ -68,7 +68,7 @@ box.curse.desc;If you would win and this is open, destroy this instead.
 box.payforshield.name;Close Spender Box
 box.payforshield.desc;On Click: Spend 1 Gold to close a random other open box. Usable 5 times.
 box.heart.name;Heart Box
-box.heart.desc;On Open: For 3 opens, you can't lose.
+box.heart.desc;For 3 opens, you can't lose.
 box.music.name;Music Box
 box.music.desc;Plays music!
 box.sus.name;Sus Box
@@ -154,7 +154,7 @@ box.tripleplay.desc;On Open: If this is the third time you've opened this box, w
 box.food.name;Food Box
 box.food.desc;On Click: Eat this box, destroying it. If this is destroyed by Consuming Box, win.
 box.allseeingeye.name;All Seeing Box
-box.allseeingeye.desc;On Open: Reveal 10 random boxes. After you open 3 boxes, lose.
+box.allseeingeye.desc;On Open: Reveal 8 random boxes. After you open 3 boxes, lose.
 box.waterfall.name;Waterfall Box
 box.waterfall.desc;On Open: If in the bottom row, win. Otherwise, transform a random box in the row below into a Waterfall Box.
 box.meteor.name;Meteor Box
@@ -316,9 +316,9 @@ box.loot.desc;Color opened box outlines based on the amount of times you've open
 box.turret.name;Turret Box
 box.turret.desc;After you open a box, destroy the box this is pointing at, then spin.
 box.winseeker.name;Winseeker Box
-box.winseeker.desc;Displays the number of adjacent boxes with "win" in their text.
+box.winseeker.desc;Displays the number of adjacent boxes with 'win' in their text.
 box.sweeper.name;Sweeper Box
-box.sweeper.desc;Displays the number of adjacent boxes with "lose" in their text.
+box.sweeper.desc;Displays the number of adjacent boxes with 'lose' in their text.
 box.costly.name;Costly Box
 box.costly.desc;On Open: If you have no Gold, lose.
 box.conveyor.name;Conveyor Box
@@ -330,13 +330,13 @@ box.queen.desc;After you open three boxes in any direction from this, lose.
 box.gift.name;Gift Box
 box.gift.desc;On Open: Gain 3 Gold. Reveal 2 random boxes. Close 1 random other box.
 box.deck.name;Deck Box
-box.deck.desc;On Open: Reveal a random box with "win" in its text.
+box.deck.desc;On Open: Reveal a random box with 'win' in its text.
 box.pinnacle.name;Pinnacle Box
 box.pinnacle.desc;On Open: If the top 3 rows are all open, you win.
 box.bowling.name;Bowling Box
 box.bowling.desc;After you open a box, add the number of boxes in its row to this. If it equals exactly 300, win.
 box.static.name;Static Box
-box.static.desc;On Open: Destroy a random box. Reveal a random box. Transform a random box randomly. Close a random box.
+box.static.desc;On Open: Destroy a random box. Transform a random revealed box. Reveal a random box. Close a random box.
 box.quilt.name;Quilt Box
 box.quilt.desc;On Click: If all boxes within 2 spaces are open, win.
 box.logic.name;Logical Box
@@ -452,3 +452,36 @@ badge.flamingmask.unlock;Win with the Inferno Box 3 times.
 badge.relaxed.name;Relaxed
 badge.relaxed.desc;Replace the Clock Box with an Info Box.
 badge.relaxed.unlock;Open the Clock Box once.
+badge.cursestart.name;Eternal Trial
+badge.cursestart.desc;Start Of Run: Reveal rows 2 and 3. Replace two boxes in the bottom row with open Curse Boxes.
+badge.cursestart.unlock;Destroy the Curse Box 20 times.
+badge.supereye.name;Super Eye
+badge.supereye.desc;The All Seeing Box now reveals 12 boxes and allows for 5 opens before losing.
+badge.supereye.unlock;Open the All Seeing Box 25 times.
+badge.tenrows.name;Ten Rows!
+badge.tenrows.desc;+1 Badge Point PERMANENTLY!
+badge.tenrows.unlock;Unlock row 10.
+badge.twohundredfiftygames.name;Two Hundred Fifty Games!
+badge.twohundredfiftygames.desc;+1 Badge Point PERMANENTLY!
+badge.twohundredfiftygames.unlock;Play 250 runs.
+badge.tnt.name;Detonator
+badge.tnt.desc;Bombs no longer tick down automatically. Instead, they do tick down as an On Click.
+badge.tnt.unlock;Explode 100 bombs.
+badge.bestres.name;Revivalist
+badge.bestres.desc;Revival Box now revives ALL destroyed boxes and reveals them as well.
+badge.bestres.unlock;Revive 30 boxes with Revival Box.
+badge.goldreveals.name;GoldenEye
+badge.goldreveals.desc;Whenever you gain Gold, reveal that many boxes.
+badge.goldreveals.unlock;Have 100 Gold at once.
+badge.superhungrybox.name;Boxzilla
+badge.superhungrybox.desc;If Consuming Box destroys 15 boxes, win.
+badge.superhungry.unlock;Consuming Box has destroyed 50 boxes.
+badge.minesweeper.name;Minesweeper
+badge.minesweeper.desc;Start Of Run: Transform 3 random boxes into Sweeper Boxes and 3 into Winseeker Boxes.
+badge.minesweeper.unlock;Open a total of 50 Minesweeper and Sweeper Boxes.
+badge.hints5andTen.name;Hints! 5 + Ten
+badge.hints5andTen.desc;Reveal which boxes are in rows 5 and ten, but not where.
+badge.hints5andTen.unlock;Win 100 runs.
+badge.scope.name;Scope
+badge.scope.desc;Double the effects of the Seer, Info and Three-D Boxes.
+badge.scope.unlock;Have 100 boxes revealed at once.

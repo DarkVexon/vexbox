@@ -14,9 +14,6 @@ func getProgress():
 func getMaxProgress():
 	return 5
 
-func getCost():
-	return 2
-
 func onOpenBox(box):
 	if enabled and number > 0:
 		setup_number(number-1)

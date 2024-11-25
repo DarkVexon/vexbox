@@ -47,10 +47,10 @@ theme_override_constants/separation = 100
 
 [node name="RestartButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = 1713.0
-offset_top = 220.0
-offset_right = 1854.0
-offset_bottom = 268.0
+offset_left = 1710.0
+offset_top = 257.0
+offset_right = 1851.0
+offset_bottom = 305.0
 text = "Restart Game
 "
 
@@ -125,31 +125,40 @@ offset_bottom = 140.0
 text = "Best Winstreak: 0"
 horizontal_alignment = 1
 
+[node name="WinPercentText" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1670.0
+offset_top = 139.0
+offset_right = 1885.0
+offset_bottom = 168.0
+text = "Winrate (Last 50 Games): 0"
+horizontal_alignment = 1
+
 [node name="CurOpenText" type="Label" parent="."]
 layout_mode = 0
-offset_left = 1693.0
-offset_top = 133.0
-offset_right = 1857.0
-offset_bottom = 162.0
+offset_left = 1696.0
+offset_top = 177.0
+offset_right = 1860.0
+offset_bottom = 206.0
 text = "Currently Open: 0
 "
 horizontal_alignment = 1
 
 [node name="CurDestroyedText" type="Label" parent="."]
 layout_mode = 0
-offset_left = 1695.0
-offset_top = 157.0
-offset_right = 1870.0
-offset_bottom = 186.0
+offset_left = 1698.0
+offset_top = 201.0
+offset_right = 1873.0
+offset_bottom = 230.0
 text = "Currently Destroyed: 0"
 horizontal_alignment = 1
 
 [node name="CurRevealedText" type="Label" parent="."]
 layout_mode = 0
-offset_left = 1695.0
-offset_top = 182.0
-offset_right = 1870.0
-offset_bottom = 211.0
+offset_left = 1698.0
+offset_top = 226.0
+offset_right = 1873.0
+offset_bottom = 255.0
 text = "Currently Revealed: 0"
 horizontal_alignment = 1
 
@@ -495,6 +504,50 @@ id = "crumblingbuff"
 [node name="Ocean" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
 layout_mode = 2
 id = "ocean"
+
+[node name="Curse Start" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
+layout_mode = 2
+id = "cursestart"
+
+[node name="Ten Rows" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
+layout_mode = 2
+id = "tenrows"
+
+[node name="Two Hundred Fifty Games" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
+layout_mode = 2
+id = "twohundredfiftygames"
+
+[node name="Super Eye" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
+layout_mode = 2
+id = "supereye"
+
+[node name="TNT" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
+layout_mode = 2
+id = "tnt"
+
+[node name="Best Res" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
+layout_mode = 2
+id = "bestres"
+
+[node name="Gold Reveals" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
+layout_mode = 2
+id = "goldreveals"
+
+[node name="Super Hungry Box" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
+layout_mode = 2
+id = "superhungrybox"
+
+[node name="Minesweeper" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
+layout_mode = 2
+id = "minesweeper"
+
+[node name="Hints 5 and Ten" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
+layout_mode = 2
+id = "hints5andTen"
+
+[node name="Scope" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
+layout_mode = 2
+id = "scope"
 
 [node name="AchievementsFront" type="ColorRect" parent="."]
 layout_mode = 0

@@ -10,9 +10,6 @@ func getProgress():
 func getMaxProgress():
 	return 500
 
-func getCost():
-	return 2
-
 func onRunStart():
 	if enabled:
 		for box in main.boxes:

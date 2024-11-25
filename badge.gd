@@ -211,3 +211,6 @@ func applyPassive() -> void:
 
 func qLog(text):
 	main.logToLog($Sprite2D.texture, text, null)
+
+func onGainGold(amount) -> void:
+	pass

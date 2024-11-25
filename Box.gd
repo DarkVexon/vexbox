@@ -77,6 +77,21 @@ var boxScene = preload("res://Box.tscn")
 
 func setupSpecial():
 	match id:
+		"monster":
+			if badgeEquipped("superhungrybox"):
+				set_custom_num(15)
+		"exploding":
+			set_custom_num(1)
+		"rowbomb":
+			set_custom_num(1)
+		"selfdestruct":
+			set_custom_num(1)
+		"alphabet":
+			arr.clear()
+		"inky":
+			set_custom_num(3)
+		"bigbomb":
+			set_custom_num(1)
 		"bowling":
 			set_custom_num(0)
 		"flower":
@@ -89,8 +104,32 @@ func setupSpecial():
 				if box.tooltipText.contains("win"):
 					value += 1
 			clearWidgets()
-			var counter = Label.new()
-			counter.text = str(value)
+			var counter = TextureRect.new()
+			match value:
+				0:
+					counter.texture = numZero
+				1:
+					counter.texture = numOne
+				2:
+					counter.texture = numTwo
+				3:
+					counter.texture = numThree
+				4:
+					counter.texture = numFour
+				5:
+					counter.texture = numFive
+				6:
+					counter.texture = numSix
+			counter.size = Vector2(75, 75)
+			counter.pivot_offset = Vector2(36, 36)
+			counter.anchor_left = 0.5
+			counter.anchor_right = 0.5
+			counter.anchor_top = 0.5
+			counter.anchor_bottom = 0.5
+			counter.offset_left = -36
+			counter.offset_right = -36
+			counter.offset_top = -36
+			counter.offset_bottom = -36
 			addWidget(counter)
 		"sweeper":
 			var value = 0
@@ -98,8 +137,32 @@ func setupSpecial():
 				if box.tooltipText.contains("lose"):
 					value += 1
 			clearWidgets()
-			var counter = Label.new()
-			counter.text = str(value)
+			var counter = TextureRect.new()
+			match value:
+				0:
+					counter.texture = numZero
+				1:
+					counter.texture = numOne
+				2:
+					counter.texture = numTwo
+				3:
+					counter.texture = numThree
+				4:
+					counter.texture = numFour
+				5:
+					counter.texture = numFive
+				6:
+					counter.texture = numSix
+			counter.size = Vector2(75, 75)
+			counter.pivot_offset = Vector2(36, 36)
+			counter.anchor_left = 0.5
+			counter.anchor_right = 0.5
+			counter.anchor_top = 0.5
+			counter.anchor_bottom = 0.5
+			counter.offset_left = -36
+			counter.offset_right = -36
+			counter.offset_top = -36
+			counter.offset_bottom = -36
 			addWidget(counter)
 		"eye":
 			var direction = main.rng.randi_range(0, 5)
@@ -137,6 +200,119 @@ func setupSpecial():
 			newArrow.offset_bottom = -22
 			addWidget(newArrow)
 			newArrow.rotation = special * 45
+		"allseeingeye":
+			set_custom_num(5 if badgeEquipped("supereye") else 3)
+		"armageddon":
+			set_custom_num(3)
+			lg("3 opens to Armageddon!")
+		"boss":
+			set_custom_num(13)
+		"clock":
+			set_custom_num(20)
+			fNum = 1
+		"quick":
+			set_custom_num(3)
+			fNum = 1
+		"clone":
+			set_custom_num(3)
+		"compass":
+			clearWidgets()
+			for box in main.boxes:
+				if box.id == "winner" and !box.destroyed:
+					var newArrow = TextureRect.new();
+					newArrow.texture = arrowImg
+					newArrow.size = Vector2(44 * main.boxesScale, 44* main.boxesScale)
+					newArrow.pivot_offset = Vector2(22* main.boxesScale, 22* main.boxesScale)
+					newArrow.anchor_left = 0.5
+					newArrow.anchor_right = 0.5
+					newArrow.anchor_top = 0.5
+					newArrow.anchor_bottom = 0.5
+					newArrow.offset_left = -22* main.boxesScale
+					newArrow.offset_right = -22* main.boxesScale
+					newArrow.offset_top = -22* main.boxesScale
+					newArrow.offset_bottom = -22* main.boxesScale
+					add_child(newArrow)
+					newArrow.rotation = position.direction_to(box.position).angle()
+					addedWidgets.append(newArrow)
+		"dice":
+			set_custom_num(4 if badgeEquipped("transmogrifier") else 2)
+		"exp":
+			set_custom_num(9)
+		"flying":
+			if badgeEquipped("windy"):
+				set_custom_num(10)
+		"gazer":
+			set_custom_num(2)
+		"heart":
+			set_custom_num(3)
+		"ice":
+			set_custom_num(3)
+		"kettle":
+			set_custom_num(3)
+		"key":
+			set_custom_num(1)
+		"music":
+			main.get_node("MusicPlayer").play()
+		"loot":
+			var maxOpens = -1
+			for id in main.all_boxes:
+				if main.getBoxStat(id, "opens") > maxOpens:
+					maxOpens = main.getBoxStat(id, "opens")
+			for box in main.boxes:
+				var colorIdx
+				var opens = main.getBoxStat(box.id, "opens")
+				if opens >= maxOpens * 0.9:
+					colorIdx = 4
+				elif opens >= maxOpens * 0.7:
+					colorIdx = 3
+				elif opens >= maxOpens * 0.5:
+					colorIdx = 2
+				elif opens >= maxOpens * 0.3:
+					colorIdx = 1
+				else:
+					colorIdx = 0
+				box.get_node("Outline").modulate = rarityColors[colorIdx]
+		"payforshield":
+			set_custom_num(5)
+		"poison":
+			set_custom_num(8)
+		"portal":
+			set_custom_num(2)
+		"program":
+			set_custom_num(6)
+		"quiz":
+			var valids = []
+			for box in main.boxes:
+				if !box.destroyed:
+					valids.append(box)
+			var word = valids.pick_random().nameText
+			heldStr = word
+			secondStr = ""
+			for i in heldStr:
+				if i == " ":
+					secondStr = secondStr + " "
+				else:
+					secondStr = secondStr + "_"
+			set_custom_num(3)
+		"sacrifice":
+			if badgeEquipped("maddii"):
+				set_custom_num(15)
+			else:
+				set_custom_num(5)
+		"scrap":
+			set_custom_num(0)
+		"smartbomb":
+			set_custom_num(1)
+		"starve":
+			set_custom_num(7)
+		"fraidy":
+			set_custom_num(5)
+		"ritual":
+			set_custom_num(0)
+		"madscientist":
+			set_custom_num(18)
+		"searchlight":
+			set_custom_num(1)
 
 static var rarityColors = [Color(0.9, 0.9, 0.9, 1), Color(0.3, 1.0, 0.3, 1), Color(0.2, 0.2, 1.0, 1), Color(1, 0.2, 1, 1), Color(1, 0.5, 0, 1)]
 
@@ -149,10 +325,9 @@ func on_open() -> void:
 					valids.append(box)
 			if valids.size() > 0:
 				valids.pick_random().destroyBox()
-			main.reveal_random()
 			valids.clear()
 			for box in main.boxes:
-				if !box.destroyed and box != self:
+				if !box.destroyed and box != self and box.revealed:
 					valids.append(box)
 			if valids.size() > 0:
 				var toChange = valids.pick_random()
@@ -162,6 +337,7 @@ func on_open() -> void:
 						okIds.append(i)
 				if okIds.size() > 0:
 					toChange.loadType(okIds.pick_random())
+			main.reveal_random()
 			close_random_other()
 		"pinnacle":
 			var i = 0
@@ -209,14 +385,10 @@ func on_open() -> void:
 			for i in 2:
 				var valids = []
 				for box in main.boxes:
-					if box != self and box.revealed and !box.destroyed:
+					if box != self and box.revealed and !box.destroyed and box.id != "portal":
 						valids.append(box)
 				if valids.size() > 0:
 					valids.pick_random().loadType("portal")
-		"bigbomb":
-			set_custom_num(1)
-		"inky":
-			set_custom_num(3)
 		"patterned":
 			var valids = []
 			for box in get_adjacent_boxes(false, false):
@@ -232,11 +404,8 @@ func on_open() -> void:
 						transformable.erase(toChange)
 						toChange.loadType(idToChange)
 		"allseeingeye":
-			for i in 10:
+			for i in 12 if badgeEquipped("supereye") else 8:
 				main.reveal_random()
-			set_custom_num(3)
-		"alphabet":
-			arr.clear()
 		"antidote":
 			for box in main.boxes:
 				if box.id == "poison" and (box.open or box.revealed):
@@ -245,9 +414,6 @@ func on_open() -> void:
 			for box in get_adjacent_boxes(false, false):
 				if box.open and box.id == "virus":
 					win()
-		"armageddon":
-			set_custom_num(3)
-			lg("3 opens to Armageddon!")
 		"badgebox":
 			if badgeEquipped("badgeboxup1"):
 				for box in get_adjacent_boxes(true, false):
@@ -280,8 +446,6 @@ func on_open() -> void:
 					count += 1
 			if count >= 15:
 				win()
-		"boss":
-			set_custom_num(13)
 		"bullseye":
 			var will_reveal = true
 			for box in get_adjacent_boxes(false, false):
@@ -302,14 +466,6 @@ func on_open() -> void:
 					hasHat = true
 			if hasWand and hasHat:
 				win()
-		"clock":
-			set_custom_num(20)
-			fNum = 1
-		"quick":
-			set_custom_num(3)
-			fNum = 1
-		"clone":
-			set_custom_num(3)
 		"closeadjacent":
 			for box in get_adjacent_boxes(false, false):
 				if box.open:
@@ -317,25 +473,6 @@ func on_open() -> void:
 					box.closeBox()
 		"closenext":
 			main.add_status(StatusTypes.CLOSENEXT, 1)
-		"compass":
-			clearWidgets()
-			for box in main.boxes:
-				if box.id == "winner" and !box.destroyed:
-					var newArrow = TextureRect.new();
-					newArrow.texture = arrowImg
-					newArrow.size = Vector2(44 * main.boxesScale, 44* main.boxesScale)
-					newArrow.pivot_offset = Vector2(22* main.boxesScale, 22* main.boxesScale)
-					newArrow.anchor_left = 0.5
-					newArrow.anchor_right = 0.5
-					newArrow.anchor_top = 0.5
-					newArrow.anchor_bottom = 0.5
-					newArrow.offset_left = -22* main.boxesScale
-					newArrow.offset_right = -22* main.boxesScale
-					newArrow.offset_top = -22* main.boxesScale
-					newArrow.offset_bottom = -22* main.boxesScale
-					add_child(newArrow)
-					newArrow.rotation = position.direction_to(box.position).angle()
-					addedWidgets.append(newArrow)
 		"confidential":
 			var count = 0
 			for box in main.boxes:
@@ -354,8 +491,6 @@ func on_open() -> void:
 			if count >= 11:
 				lg("Desert sands victory!")
 				win()
-		"dice":
-			set_custom_num(4 if badgeEquipped("transmogrifier") else 2)
 		"dna":
 			dnaTransform()
 		"dragon":
@@ -369,8 +504,6 @@ func on_open() -> void:
 			else:
 				lg("The Dragon slays you!")
 				lose()
-		"exp":
-			set_custom_num(9)
 		"fairy":
 			var valids = []
 			for box in main.boxes:
@@ -386,9 +519,6 @@ func on_open() -> void:
 			if count >= 4:
 				lg("Four or more fairies - you win!")
 				win()
-		"flying":
-			if badgeEquipped("windy"):
-				set_custom_num(10)
 		"finalboss":
 			if main.rng.randi_range(0, 12) == 0 and main.getBoxStat("finalboss", "opens") > 2:
 				modStat("timesActivated", 1)
@@ -440,8 +570,6 @@ func on_open() -> void:
 			if main.winstreak > 0:
 				lg("What a gamer! That's a winstreaking GAMER VICTORY!")
 				win()
-		"gazer":
-			set_custom_num(2)
 		"ghost":
 			for i in 2:
 				var valids = []
@@ -460,12 +588,8 @@ func on_open() -> void:
 					hasCloak = true
 			if hasWand and hasCloak:
 				win()
-		"heart":
-			set_custom_num(3)
-		"ice":
-			set_custom_num(3)
 		"info":
-			for i in 2:
+			for i in 4 if badgeEquipped("scope") else 2:
 				var toChange = get_adjacent_boxes(true, true)
 				if toChange.size() > 0:
 					toChange.pick_random().revealBox()
@@ -505,10 +629,6 @@ func on_open() -> void:
 			if count == 1:
 				lg("SUPER UNLUCKY! That's a TERRIFYING Jumspcare loss!")
 				lose()
-		"kettle":
-			set_custom_num(3)
-		"key":
-			set_custom_num(1)
 		"lock":
 			if get_box_counter("key") > 0:
 				lg("Key unlocks the Lock Box - VICTORY!")
@@ -539,27 +659,6 @@ func on_open() -> void:
 			if main.rng.randi_range(1, 3) == 1:
 				lg("The Mimic attacks you viciously!")
 				lose()
-		"music":
-			main.get_node("MusicPlayer").play()
-		"loot":
-			var maxOpens = -1
-			for id in main.all_boxes:
-				if main.getBoxStat(id, "opens") > maxOpens:
-					maxOpens = main.getBoxStat(id, "opens")
-			for box in main.boxes:
-				var colorIdx
-				var opens = main.getBoxStat(box.id, "opens")
-				if opens >= maxOpens * 0.9:
-					colorIdx = 4
-				elif opens >= maxOpens * 0.7:
-					colorIdx = 3
-				elif opens >= maxOpens * 0.5:
-					colorIdx = 2
-				elif opens >= maxOpens * 0.3:
-					colorIdx = 1
-				else:
-					colorIdx = 0
-				box.get_node("Outline").modulate = rarityColors[colorIdx]
 		"onegold":
 			main.add_status(StatusTypes.GOLD, 1)
 		"paint":
@@ -574,12 +673,6 @@ func on_open() -> void:
 				if box != self and box.revealed and not box.destroyed:
 					modStat("timesActivated", 1)
 					box.loadType("loss")
-		"payforshield":
-			set_custom_num(5)
-		"poison":
-			set_custom_num(8)
-		"portal":
-			set_custom_num(2)
 		"poverty":
 			if (main.has_status(StatusTypes.GOLD)):
 				main.remove_status(StatusTypes.GOLD)
@@ -593,22 +686,6 @@ func on_open() -> void:
 				lose()
 			else:
 				main.add_status(StatusTypes.GOLD, 3)
-		"program":
-			set_custom_num(6)
-		"quiz":
-			var valids = []
-			for box in main.boxes:
-				if !box.destroyed:
-					valids.append(box)
-			var word = valids.pick_random().nameText
-			heldStr = word
-			secondStr = ""
-			for i in heldStr:
-				if i == " ":
-					secondStr = secondStr + " "
-				else:
-					secondStr = secondStr + "_"
-			set_custom_num(3)
 		"revealcorners":
 			var revealedAny = false
 			var topRow = 0
@@ -660,19 +737,28 @@ func on_open() -> void:
 				win()
 		"revealrandom":
 			main.reveal_random()
+			if badgeEquipped("scope"):
+				main.reveal_random()
 		"revealrow":
 			main.reveal_row(row)
 		"revival":
-			var valids = []
-			for box in main.boxes:
-				if box.destroyed:
-					valids.append(box)
-			var siz = valids.size()
-			for i in min(5, siz):
-				modStat("timesActivated", 1)
-				var toRes = valids.pick_random()
-				toRes.reviveBox()
-				valids.erase(toRes)
+			if badgeEquipped("bestres"):
+				for box in main.boxes:
+					if box.destroyed:
+						modStat("timesActivated", 1)
+						box.reviveBox()
+						box.revealBox()
+			else:
+				var valids = []
+				for box in main.boxes:
+					if box.destroyed:
+						valids.append(box)
+				var siz = valids.size()
+				for i in min(5, siz):
+					modStat("timesActivated", 1)
+					var toRes = valids.pick_random()
+					toRes.reviveBox()
+					valids.erase(toRes)
 		"rowgold":
 			var goldAmt = 0
 			for box in main.rows[row]:
@@ -693,15 +779,8 @@ func on_open() -> void:
 						for badge in main.get_node("AchievementsContainer").get_children():
 							if badge.id == "widerow" and !badge.unlocked:
 								badge.unlock()
-		"sacrifice":
-			if badgeEquipped("maddii"):
-				set_custom_num(15)
-			else:
-				set_custom_num(5)
 		"safety":
 			main.add_status(StatusTypes.SAFETY, 1)
-		"scrap":
-			set_custom_num(0)
 		"shadow":
 			close_random_other()
 		"sleepy":
@@ -765,7 +844,6 @@ func on_open() -> void:
 				if list.size() > 0:
 					var toChange = list.pick_random()
 					toChange.loadType("food")
-			set_custom_num(7)
 		"sus":
 			for i in 2:
 				var list = []
@@ -779,7 +857,7 @@ func on_open() -> void:
 				if toChange.revealed and not toChange.open:
 					toChange.revealBox()
 		"threed":
-			for i in 3:
+			for i in 6 if badgeEquipped("scope") else 3:
 				main.reveal_random()
 		"threegold":
 			main.add_status(StatusTypes.GOLD, 3)
@@ -909,20 +987,12 @@ func on_open() -> void:
 			if get_adjacent_boxes(false, false).size() <= 4:
 				lg("Loner Box is sufficiently lonely! You win!")
 				win()
-		"fraidy":
-			set_custom_num(5)
 		"L":
 			for box in get_adjacent_boxes(false, false):
 				if box.open:
 					lg("L box is adjacent to an open box - oh no, L!")
 					lose()
 					break
-		"ritual":
-			set_custom_num(0)
-		"madscientist":
-			set_custom_num(18)
-		"searchlight":
-			set_custom_num(1)
 	pass
 
 func is_upleft_from_me(other):
@@ -954,10 +1024,16 @@ func on_other_box_opened_prio_first(box: Box) -> void:
 				var toEat = adjacents.pick_random()
 				lg("Consuming Box is consuming a box and moving!")
 				toEat.destroyBox()
+				modStat("timesActivated", 1)
+				swapWith(toEat)
 				if toEat.id == "food":
 					lg("Consuming Box ate a Food Box! You win!")
 					win()
-				swapWith(toEat)
+				if badgeEquipped("superhungrybox") and customNum > 0:
+					set_custom_num(customNum-1)
+					if customNum == 0:
+						lg("Consuming Box has eaten 15 boxes! You win!")
+						win()
 
 func on_other_box_opened_prio_last(box: Box) -> void:
 	match id:
@@ -969,381 +1045,408 @@ func on_other_box_opened_prio_last(box: Box) -> void:
 			for i in range(1, reals.size()):
 				reals[i].swapWith(reals[i-1])
 
+static var bombs = ["bigbomb", "armageddon", "exploding", "rowbomb", "selfdestruct", "smartbomb"]
+var passin = false
+
 func on_other_box_opened(box: Box) -> void:
-	match id:
-		"bowling":
-			var count = 0
-			for other in main.rows[box.row]:
-				if !other.destroyed:
-					count += 1
-			set_custom_num(customNum + count)
-			if customNum == 300:
-				lg("Perfect game! You win!")
-				win()
-		"queen":
-			if is_upleft_from_me(box) or is_upright_from_me(box) or is_left_from_me(box) or is_right_from_me(box) or is_downleft_from_me(box) or is_downright_from_me(box):
-				if customNum > 0:
-					set_custom_num(customNum-1)
-					if customNum == 0:
-						lg("Queen Box makes you lose!")
-						lose()
-		"turret":
-			match (special):
-				0:
-					for i in range(col-1, -1, -1):
-						var toHit = main.rows[row][i]
-						if !toHit.destroyed:
-							lg("Turret Box fires!")
-							toHit.destroyBox()
-							break
-				1:
-					for i in range(row+1, main.unlockedRows):
-						var toHit = main.rows[i][col]
-						if !toHit.destroyed:
-							lg("Turret Box fires!")
-							toHit.destroyBox()
-							break
-				2:
-					for i in range(row+1, main.unlockedRows):
-						var toHit = main.rows[i][col + (i-row)]
-						if !toHit.destroyed:
-							lg("Turret Box fires!")
-							toHit.destroyBox()
-							break
-				3:
-					for i in range(col+1, main.rows[row].size()):
-						var toHit = main.rows[row][i]
-						if !toHit.destroyed:
-							lg("Turret Box fires!")
-							toHit.destroyBox()
-							break
-				4:
-					for i in range(row-1, -1, -1):
-						if main.rows[i].size() > col:
+	if bombs.has(id) and badgeEquipped("tnt") and !passin:
+		pass
+	else:
+		passin = false
+		match id:
+			"bowling":
+				var count = 0
+				for other in main.rows[box.row]:
+					if !other.destroyed:
+						count += 1
+				set_custom_num(customNum + count)
+				if customNum == 300:
+					lg("Perfect game! You win!")
+					win()
+			"queen":
+				if is_upleft_from_me(box) or is_upright_from_me(box) or is_left_from_me(box) or is_right_from_me(box) or is_downleft_from_me(box) or is_downright_from_me(box):
+					if customNum > 0:
+						set_custom_num(customNum-1)
+						if customNum == 0:
+							lg("Queen Box makes you lose!")
+							lose()
+			"turret":
+				match (special):
+					0:
+						for i in range(col-1, -1, -1):
+							var toHit = main.rows[row][i]
+							if !toHit.destroyed:
+								lg("Turret Box fires!")
+								toHit.destroyBox()
+								break
+					1:
+						for i in range(row+1, main.unlockedRows):
 							var toHit = main.rows[i][col]
 							if !toHit.destroyed:
 								lg("Turret Box fires!")
 								toHit.destroyBox()
 								break
-				5:
-					for i in range(row-1, -1, -1):
-						if col-(row-i) >= 0:
-							var toHit = main.rows[i][col-(row-i)]
+					2:
+						for i in range(row+1, main.unlockedRows):
+							var toHit = main.rows[i][col + (i-row)]
 							if !toHit.destroyed:
 								lg("Turret Box fires!")
 								toHit.destroyBox()
 								break
-			special += 1
-			special %= 6
-			clearWidgets()
-			var newArrow = TextureRect.new();
-			newArrow.texture = load("res://uiImgs/turretlook.png")
-			newArrow.size = Vector2(44, 44)
-			newArrow.pivot_offset = Vector2(22, 22)
-			newArrow.anchor_left = 0.5
-			newArrow.anchor_right = 0.5
-			newArrow.anchor_top = 0.5
-			newArrow.anchor_bottom = 0.5
-			newArrow.offset_left = -22
-			newArrow.offset_right = -22
-			newArrow.offset_top = -22
-			newArrow.offset_bottom = -22
-			add_child(newArrow)
-			newArrow.rotation = special * 45
-			addedWidgets.append(newArrow)
-		"eye":
-			special += 1
-			special %= 6
-			clearWidgets()
-			var newArrow = TextureRect.new();
-			newArrow.texture = load("res://uiImgs/eyelook.png")
-			newArrow.size = Vector2(44, 44)
-			newArrow.pivot_offset = Vector2(22, 22)
-			newArrow.anchor_left = 0.5
-			newArrow.anchor_right = 0.5
-			newArrow.anchor_top = 0.5
-			newArrow.anchor_bottom = 0.5
-			newArrow.offset_left = -22
-			newArrow.offset_right = -22
-			newArrow.offset_top = -22
-			newArrow.offset_bottom = -22
-			add_child(newArrow)
-			newArrow.rotation = special * 45
-			addedWidgets.append(newArrow)
-		"bigbomb":
-			if customNum > 0:
-				set_custom_num(customNum-1)
-				lg("Big Bomb Box exploded!")
-				for other in get_tworange_boxes():
-					other.destroyBox()
-				destroyBox()
-				hide_custom_num()
-		"allseeingeye":
-			if customNum > 0:
-				if customNum == 1:
-					lg("All Seeing Box activates!")
-					lose()
-				set_custom_num(customNum - 1)
-				if main.gameRunning and customNum == 0:
-						hide_custom_num()
-		"alphabet":
-			var regex = RegEx.new()
-			regex.compile("[a-zA-Z]+")
-			for i in box.nameText.to_lower():
-				if regex.search(i):
-					arr.append(i)
-			var will_win = true
-			for letter in alphabet:
-				if !arr.has(letter):
-					will_win = false
-			if will_win:
-				lg("The Alphabox is complete!")
-				win()
-		"armageddon":
-			if customNum == 1:
-				lg("Armageddon has arrived!")
-				main.modBoxStat(id, "timesActivated", 1)
-				main.clear_central()
-				main.destroy_box(self)
-				hide_custom_num()
-			elif customNum > 0:
-				set_custom_num(customNum - 1)
-				lg(str(customNum) + " opens to Armageddon!")
-		"autoopen":
-			var valids = get_adjacent_boxes(false, true)
-			if valids.size() > 0:
-				lg(nameText + " is opening a box!")
-				main.modBoxStat(id, "timesActivated", 1)
-				var toOpen = valids.pick_random()
-				toOpen.openBox()
-				toOpen.just_opened = true
-		"boss":
-			if customNum > 0:
-				if customNum == 1:
-					lg("You slayed the Boss!")
-					win()
-				set_custom_num(customNum-1)
-				if main.gameRunning and customNum == 0:
-						hide_custom_num()
-		"checkbox":
-			if !main.last_opened.was_revealed_when_opened and open and !destroyed and !just_opened:
-				modStat("timesActivated", 1)
-				main.reveal_random()
-		"quick":
-			if open and !destroyed and !just_opened and customNum > 0:
-				modStat("timesActivated", 1)
-				main.reveal_random()
-		"clone":
-			if customNum > 0:
-				if customNum == 1:
-					var found = get_adjacent_boxes(false, false).pick_random()
-					found.revealBox()
-					loadType(found.id)
-					closeBox()
-				else:
-					set_custom_num(customNum - 1)
-		"clumsy":
-			var valids = []
-			for other in box.get_adjacent_boxes(false, false):
-				valids.append(other)
-			if valids.size() > 0:
-				lg("Clumsy Box is destroying a box!")
-				valids.pick_random().destroyBox()
-				modStat("destroys", 1)
-		"crumbling":
-			for other in main.boxes:
-				if !other.destroyed:
-					modStat("destroys", 1)
-					main.destroy_box(other)
-					if other.id == "crumbling" and badgeEquipped("crumblingbuff"):
-						lg("Crumbling Irony activates - YOU WIN!")
-						win()
-					break
-		"crystalball":
-			for other in box.get_adjacent_boxes(false, false):
-				if !other.destroyed:
-					if other.id == "hat" or other.id == "cloak" or other.id == "wand":
-						other.revealBox()
-						modStat("timesActivated", 1)
-		"dna":
-			if badgeEquipped("reroller"):
-				for other in get_adjacent_boxes(false, false):
-					if other == box:
-						special = 1
-						break
-				if special == 0:
-					dnaTransform()
-		"dungeon":
-			if box.id != "spike":
-				for i in 2:
-					var valids = []
-					for other in box.get_adjacent_boxes(false, true):
-						if other.id != "spike":
-							valids.append(other)
-					if valids.size() > 0:
-						valids.pick_random().loadType("spike")
-		"exp":
-			if open and !main.last_opened.was_revealed_when_opened and customNum > 0 and !just_opened:
-				set_custom_num(customNum-1)
-				if customNum == 0:
-					lg("Your exploration has resulted in an EXP Victory!")
-					win()
-					if main.gameRunning:
-						hide_custom_num()
-		"exploding":
-			lg(nameText + " exploded!")
-			for other in get_adjacent_boxes(false, false):
-				main.destroy_box(other)
-				modStat("destroys", 1)
-			main.destroy_box(self)
-		"gazer":
-			for other in get_adjacent_boxes(false, false):
-				if other == box:
+					3:
+						for i in range(col+1, main.rows[row].size()):
+							var toHit = main.rows[row][i]
+							if !toHit.destroyed:
+								lg("Turret Box fires!")
+								toHit.destroyBox()
+								break
+					4:
+						for i in range(row-1, -1, -1):
+							if main.rows[i].size() > col:
+								var toHit = main.rows[i][col]
+								if !toHit.destroyed:
+									lg("Turret Box fires!")
+									toHit.destroyBox()
+									break
+					5:
+						for i in range(row-1, -1, -1):
+							if col-(row-i) >= 0:
+								var toHit = main.rows[i][col-(row-i)]
+								if !toHit.destroyed:
+									lg("Turret Box fires!")
+									toHit.destroyBox()
+									break
+				special += 1
+				special %= 6
+				clearWidgets()
+				var newArrow = TextureRect.new();
+				newArrow.texture = load("res://uiImgs/turretlook.png")
+				newArrow.size = Vector2(44, 44)
+				newArrow.pivot_offset = Vector2(22, 22)
+				newArrow.anchor_left = 0.5
+				newArrow.anchor_right = 0.5
+				newArrow.anchor_top = 0.5
+				newArrow.anchor_bottom = 0.5
+				newArrow.offset_left = -22
+				newArrow.offset_right = -22
+				newArrow.offset_top = -22
+				newArrow.offset_bottom = -22
+				add_child(newArrow)
+				newArrow.rotation = special * 45
+				addedWidgets.append(newArrow)
+			"eye":
+				special += 1
+				special %= 6
+				clearWidgets()
+				var newArrow = TextureRect.new();
+				newArrow.texture = load("res://uiImgs/eyelook.png")
+				newArrow.size = Vector2(44, 44)
+				newArrow.pivot_offset = Vector2(22, 22)
+				newArrow.anchor_left = 0.5
+				newArrow.anchor_right = 0.5
+				newArrow.anchor_top = 0.5
+				newArrow.anchor_bottom = 0.5
+				newArrow.offset_left = -22
+				newArrow.offset_right = -22
+				newArrow.offset_top = -22
+				newArrow.offset_bottom = -22
+				add_child(newArrow)
+				newArrow.rotation = special * 45
+				addedWidgets.append(newArrow)
+			"bigbomb":
+				if customNum > 0:
 					set_custom_num(customNum-1)
 					if customNum == 0:
-						lg("The Gazer sees your actions!")
+						lg("Big Bomb Box exploded!")
+						main.modStat("bombsExploded", 1)
+						for other in get_tworange_boxes():
+							other.destroyBox()
+						destroyBox()
+						hide_custom_num()
+			"allseeingeye":
+				if customNum > 0:
+					if customNum == 1:
+						lg("All Seeing Box activates!")
 						lose()
+					set_custom_num(customNum - 1)
+					if main.gameRunning and customNum == 0:
+							hide_custom_num()
+			"alphabet":
+				var regex = RegEx.new()
+				regex.compile("[a-zA-Z]+")
+				for i in box.nameText.to_lower():
+					if regex.search(i):
+						arr.append(i)
+				var will_win = true
+				for letter in alphabet:
+					if !arr.has(letter):
+						will_win = false
+				if will_win:
+					lg("The Alphabox is complete!")
+					win()
+			"armageddon":
+				if customNum == 1:
+					lg("Armageddon has arrived!")
+					main.modStat("bombsExploded", 1)
+					main.modBoxStat(id, "timesActivated", 1)
+					main.clear_central()
+					main.destroy_box(self)
+					hide_custom_num()
+				elif customNum > 0:
+					set_custom_num(customNum - 1)
+					lg(str(customNum) + " opens to Armageddon!")
+			"autoopen":
+				var valids = get_adjacent_boxes(false, true)
+				if valids.size() > 0:
+					lg(nameText + " is opening a box!")
+					main.modBoxStat(id, "timesActivated", 1)
+					var toOpen = valids.pick_random()
+					toOpen.openBox()
+					toOpen.just_opened = true
+			"boss":
+				if customNum > 0:
+					if customNum == 1:
+						lg("You slayed the Boss!")
+						win()
+					set_custom_num(customNum-1)
+					if main.gameRunning and customNum == 0:
+							hide_custom_num()
+			"checkbox":
+				if !main.last_opened.was_revealed_when_opened and open and !destroyed and !just_opened:
+					modStat("timesActivated", 1)
+					main.reveal_random()
+			"quick":
+				if open and !destroyed and !just_opened and customNum > 0:
+					modStat("timesActivated", 1)
+					main.reveal_random()
+			"clone":
+				if customNum > 0:
+					if customNum == 1:
+						var found = get_adjacent_boxes(false, false).pick_random()
+						found.revealBox()
+						loadType(found.id)
+						closeBox()
+					else:
+						set_custom_num(customNum - 1)
+			"clumsy":
+				var valids = []
+				for other in box.get_adjacent_boxes(false, false):
+					valids.append(other)
+				if valids.size() > 0:
+					lg("Clumsy Box is destroying a box!")
+					valids.pick_random().destroyBox()
+					modStat("destroys", 1)
+			"crumbling":
+				for other in main.boxes:
+					if !other.destroyed:
+						modStat("destroys", 1)
+						main.destroy_box(other)
+						if other.id == "crumbling" and badgeEquipped("crumblingbuff"):
+							lg("Crumbling Irony activates - YOU WIN!")
+							win()
+						break
+			"crystalball":
+				for other in box.get_adjacent_boxes(false, false):
+					if !other.destroyed:
+						if other.id == "hat" or other.id == "cloak" or other.id == "wand":
+							other.revealBox()
+							modStat("timesActivated", 1)
+			"dna":
+				if badgeEquipped("reroller"):
+					for other in get_adjacent_boxes(false, false):
+						if other == box:
+							special = 1
+							break
+					if special == 0:
+						dnaTransform()
+			"dungeon":
+				if box.id != "spike":
+					for i in 2:
+						var valids = []
+						for other in box.get_adjacent_boxes(false, true):
+							if other.id != "spike":
+								valids.append(other)
+						if valids.size() > 0:
+							valids.pick_random().loadType("spike")
+			"exp":
+				if open and !main.last_opened.was_revealed_when_opened and customNum > 0 and !just_opened:
+					set_custom_num(customNum-1)
+					if customNum == 0:
+						lg("Your exploration has resulted in an EXP Victory!")
+						win()
 						if main.gameRunning:
 							hide_custom_num()
-		"heart":
-			if customNum > 0:
-				set_custom_num(customNum-1)
-		"heartbreak":
-			if main.rng.randi_range(0, 9) == 9:
-				lg(nameText + " activated - oh no!")
-				lose()
-		"ice":
-			if customNum > 0:
-				if customNum == 1:
-					lg("Ice Box has thawed!")
-				set_custom_num(customNum - 1)
-		"income":
-			if main.rng.randi_range(1, 3) == 1:
-				modStat("timesActivated", 1)
-				lg(nameText + " generated 1 Gold!")
-				main.add_status(StatusTypes.GOLD, 1)
-		"kettle":
-			if customNum > 0:
+			"exploding":
+				if customNum > 0:
+					set_custom_num(customNum-1)
+					if customNum == 0:
+						main.modStat("bombsExploded", 1)
+						lg(nameText + " exploded!")
+						for other in get_adjacent_boxes(false, false):
+							main.destroy_box(other)
+							modStat("destroys", 1)
+						modStat("destroys", 1)
+						main.destroy_box(self)
+			"gazer":
 				for other in get_adjacent_boxes(false, false):
 					if other == box:
 						set_custom_num(customNum-1)
 						if customNum == 0:
-							for i in 5:
-								main.reveal_random()
-							hide_custom_num()
-							break
-		"key":
-			if customNum > 0:
-				set_custom_num(customNum - 1)
-		"mine":
-			for other in get_adjacent_boxes(false, false):
-				if box == other:
-					lg("Mined some gold!")
+							lg("The Gazer sees your actions!")
+							lose()
+							if main.gameRunning:
+								hide_custom_num()
+			"heart":
+				if customNum > 0:
+					set_custom_num(customNum-1)
+			"heartbreak":
+				if main.rng.randi_range(0, 9) == 9:
+					lg(nameText + " activated - oh no!")
+					lose()
+			"ice":
+				if customNum > 0:
+					if customNum == 1:
+						lg("Ice Box has thawed!")
+					set_custom_num(customNum - 1)
+			"income":
+				if main.rng.randi_range(1, 3) == 1:
 					modStat("timesActivated", 1)
+					lg(nameText + " generated 1 Gold!")
 					main.add_status(StatusTypes.GOLD, 1)
-		"fraidy":
-			if customNum > 0:
-				set_custom_num(customNum-1)
-		"poison":
-			if customNum > 0:
+			"kettle":
+				if customNum > 0:
+					for other in get_adjacent_boxes(false, false):
+						if other == box:
+							set_custom_num(customNum-1)
+							if customNum == 0:
+								for i in 5:
+									main.reveal_random()
+								hide_custom_num()
+								break
+			"key":
+				if customNum > 0:
+					set_custom_num(customNum - 1)
+			"mine":
+				for other in get_adjacent_boxes(false, false):
+					if box == other:
+						lg("Mined some gold!")
+						modStat("timesActivated", 1)
+						main.add_status(StatusTypes.GOLD, 1)
+			"fraidy":
+				if customNum > 0:
+					set_custom_num(customNum-1)
+			"poison":
+				if customNum > 0:
+					set_custom_num(customNum - 1)
+					if customNum <= 0:
+						lg("You succumb to poison!")
+						lose()
+						if main.gameRunning:
+							hide_custom_num()
+			"program":
 				set_custom_num(customNum - 1)
 				if customNum <= 0:
-					lg("You succumb to poison!")
-					lose()
-					if main.gameRunning:
-						hide_custom_num()
-		"program":
-			set_custom_num(customNum - 1)
-			if customNum <= 0:
-				hide_custom_num()
-		"rowbomb":
-			lg(nameText + " exploded!")
-			for other in main.rows[row]:
-				if other != self and !other.destroyed:
-					modStat("destroys", 1)
-					main.destroy_box(other)
-			modStat("destroys", 1)
-			main.destroy_box(self)
-		"selfdestruct":
-			lg(nameText + " exploded!")
-			main.destroy_box(self)
-		"shy":
-			if main.rng.randi_range(0, 2) == 2:
-				modStat("timesActivated", 1)
-				closeBox()
-		"smartbomb":
-			lg(nameText + " exploded!")
-			for other in get_adjacent_boxes(false, false):
-				main.destroy_box(other)
-				modStat("destroys", 1)
-			modStat("destroys", 1)
-			main.destroy_box(self)
-		"starve":
-			if customNum > -1:
-				if customNum == 0:
-					lg("The Hungry Box starves!")
-					lose()
-				if main.gameRunning:
-					set_custom_num(customNum - 1)
-					if main.gameRunning and customNum == -1:
-						hide_custom_num()
-		"stuck":
-			var willWin = true
-			for other in main.boxes:
-				if other.canOpen():
-					willWin = false
-			if willWin:
-				lg("No boxes to open! Softlock Box activates!")
-				win()
-		"teacher":
-			var valids = get_adjacent_boxes(true, false)
-			if valids.size() > 0:
-				modStat("timesActivated", 1)
-				lg(nameText + " activated!")
-				var toReveal = valids.pick_random()
-				toReveal.revealBox()
-		"virus":
-			if special != 1:
-				for other in get_adjacent_boxes(false, false):
-					if other.revealed and other.open and other.id != "virus":
-						modStat("timesActivated", 1)
-						other.loadType("virus")
-						other.special = 1
-		"quiz":
-			if box.name == heldStr:
-				lg("You guessed Quiz Box's box! You win!")
-				win()
-			else:
-				if heldStr != secondStr:
+					hide_custom_num()
+			"rowbomb":
+				if customNum > 0:
 					set_custom_num(customNum-1)
 					if customNum == 0:
-						var valids = []
-						for i in heldStr.length():
-							if heldStr[i] != secondStr[i]:
-								valids.append(i)
-						if valids.size() > 0:
-							var trick = valids.pick_random()
-							secondStr[trick] = heldStr[trick]
-						set_custom_num(3)
-		"locust":
-			var valids = []
-			for other in main.boxes:
-				if other.id != "locust" and !other.destroyed:
-					valids.append(other)
-			if valids.size() > 0:
-				valids.pick_random().loadType("locust")
-		"ritual":
-			if customNum <= 0:
-				set_custom_num(1)
-			else:
-				set_custom_num(customNum+1)
-		"pet":
-			swapWith(main.last_opened)
-		"searchlight":
-			if !main.last_opened.was_revealed_when_opened and customNum > 0:
-				set_custom_num(customNum-1)
-				for other in box.get_adjacent_boxes(true, false):
-					other.revealBox()
+						main.modStat("bombsExploded", 1)
+						lg(nameText + " exploded!")
+						for other in main.rows[row]:
+							if other != self and !other.destroyed:
+								modStat("destroys", 1)
+								main.destroy_box(other)
+						modStat("destroys", 1)
+						main.destroy_box(self)
+			"selfdestruct":
+				if customNum > 0:
+					set_custom_num(customNum-1)
+					if customNum == 0:
+						main.modStat("bombsExploded", 1)
+						lg(nameText + " exploded!")
+						main.destroy_box(self)
+			"shy":
+				if main.rng.randi_range(0, 2) == 2:
+					modStat("timesActivated", 1)
+					closeBox()
+			"smartbomb":
+				if customNum > 0:
+					set_custom_num(customNum-1)
+					if customNum == 0:
+						main.modStat("bombsExploded", 1)
+						lg(nameText + " exploded!")
+						for other in get_adjacent_boxes(false, false):
+							main.destroy_box(other)
+							modStat("destroys", 1)
+						modStat("destroys", 1)
+						main.destroy_box(self)
+			"starve":
+				if customNum > -1:
+					if customNum == 0:
+						lg("The Hungry Box starves!")
+						lose()
+					if main.gameRunning:
+						set_custom_num(customNum - 1)
+						if main.gameRunning and customNum == -1:
+							hide_custom_num()
+			"stuck":
+				var willWin = true
+				for other in main.boxes:
+					if other.canOpen():
+						willWin = false
+				if willWin:
+					lg("No boxes to open! Softlock Box activates!")
+					win()
+			"teacher":
+				var valids = get_adjacent_boxes(true, false)
+				if valids.size() > 0:
+					modStat("timesActivated", 1)
+					lg(nameText + " activated!")
+					var toReveal = valids.pick_random()
+					toReveal.revealBox()
+			"virus":
+				if special != 1:
+					for other in get_adjacent_boxes(false, false):
+						if other.revealed and other.open and other.id != "virus":
+							modStat("timesActivated", 1)
+							other.loadType("virus")
+							other.special = 1
+			"quiz":
+				if box.nameText == heldStr:
+					lg("You guessed Quiz Box's box! You win!")
+					win()
+				else:
+					if heldStr != secondStr:
+						set_custom_num(customNum-1)
+						if customNum == 0:
+							var valids = []
+							for i in heldStr.length():
+								if heldStr[i] != secondStr[i]:
+									valids.append(i)
+							if valids.size() > 0:
+								var trick = valids.pick_random()
+								secondStr[trick] = heldStr[trick]
+							set_custom_num(3)
+			"locust":
+				var valids = []
+				for other in main.boxes:
+					if other.id != "locust" and !other.destroyed:
+						valids.append(other)
+				if valids.size() > 0:
+					valids.pick_random().loadType("locust")
+			"ritual":
+				if customNum <= 0:
+					set_custom_num(1)
+				else:
+					set_custom_num(customNum+1)
+			"pet":
+				swapWith(main.last_opened)
+			"searchlight":
+				if !main.last_opened.was_revealed_when_opened and customNum > 0:
+					set_custom_num(customNum-1)
+					for other in box.get_adjacent_boxes(true, false):
+						other.revealBox()
 	pass
 
 func on_other_box_opened_immediate(box: Box) -> void:
@@ -1358,311 +1461,320 @@ func on_other_box_opened_immediate(box: Box) -> void:
 	pass
 
 func can_use() -> bool:
-	match id:
-		"quilt":
-			var canDo = true
-			for box in get_tworange_boxes():
-				if !box.open and !box.destroyed:
-					canDo = false
-			return canDo
-		"goldenbug":
-			return true
-		"puzzle":
-			return true
-		"ritual":
-			return true
-		"rowwin":
-			if badgeEquipped("widerow"):
-				var willWin = true
-				for box in main.rows[row]:
+	if bombs.has(id) and badgeEquipped("tnt"):
+		return customNum > 0
+	else:
+		match id:
+			"quilt":
+				var canDo = true
+				for box in get_tworange_boxes():
 					if !box.open and !box.destroyed:
-						willWin = false
-				return willWin
-			return false
-		"cannon":
-			for box in main.rows[row]:
-				if box.col > col and !box.destroyed:
-					return true
-			return false
-		"cauldron":
-			return true
-		"clock":
-			return customNum > 0
-		"daredevil":
-			return true
-		"darts":
-			var total = 0
-			for box in main.boxes:
-				if box.customNum > 0 and !box.destroyed:
-					total += box.customNum
-			return total >= 13
-		"dice":
-			return customNum > 0
-		"doubleup":
-			var ids = []
-			for box in get_adjacent_boxes(false, false):
-				if !box.destroyed and box.revealed:
-					if ids.has(box.id):
-						return true
-					else:
-						ids.append(box.id)
-			return false
-		"food":
-			return true
-		"inferno":
-			var count = 0
-			for box in main.boxes:
-				if box.id == "fire" and box.open and !box.destroyed:
-					count += 1
-			if count >= 10:
+						canDo = false
+				return canDo
+			"goldenbug":
 				return true
-			return false
-		"ladder":
-			var canGo = true
-			for row in main.rows:
-				var oneOpen = false
-				var anyBox = false
-				for box in row:
-					if !box.destroyed:
-						anyBox = true
-						if box.open:
-							if !oneOpen:
-								oneOpen = true
-							else:
-								oneOpen = false
-								break
-				if !oneOpen and anyBox:
-					canGo = false
-					break
-			return canGo
-		"magnifying":
-			return main.status_amount(StatusTypes.GOLD) >= 1
-		"moon":
-			return true
-		"otherworld":
-			return true
-		"payforreveals":
-			var valids = get_adjacent_boxes(true, false)
-			return valids.size() > 0 and main.status_amount(StatusTypes.GOLD) > 0
-		"payforshield":
-			var otherBoxIsOpen = false
-			for box in main.boxes:
-				if box.open and !box.destroyed and box != self:
-					otherBoxIsOpen = true
-					break
-			return main.status_amount(StatusTypes.GOLD) >= 1 and otherBoxIsOpen and customNum > 0
-		"portal":
-			return customNum > 0
-		"sacrifice":
-			return customNum > 0
-		"scrap":
-			return customNum > 0
-		"slots":
-			return main.status_amount(StatusTypes.GOLD) >= 2
-		"spendtowin":
-			return main.status_amount(StatusTypes.GOLD) >= 6
+			"puzzle":
+				return true
+			"ritual":
+				return true
+			"rowwin":
+				if badgeEquipped("widerow"):
+					var willWin = true
+					for box in main.rows[row]:
+						if !box.open and !box.destroyed:
+							willWin = false
+					return willWin
+				return false
+			"cannon":
+				for box in main.rows[row]:
+					if box.col > col and !box.destroyed:
+						return true
+				return false
+			"cauldron":
+				return true
+			"clock":
+				return customNum > 0
+			"daredevil":
+				return true
+			"darts":
+				var total = 0
+				for box in main.boxes:
+					if box.customNum > 0 and !box.destroyed:
+						total += box.customNum
+				return total >= 13
+			"dice":
+				return customNum > 0
+			"doubleup":
+				var ids = []
+				for box in get_adjacent_boxes(false, false):
+					if !box.destroyed and box.revealed:
+						if ids.has(box.id):
+							return true
+						else:
+							ids.append(box.id)
+				return false
+			"food":
+				return true
+			"inferno":
+				var count = 0
+				for box in main.boxes:
+					if box.id == "fire" and box.open and !box.destroyed:
+						count += 1
+				if count >= 10:
+					return true
+				return false
+			"ladder":
+				var canGo = true
+				for row in main.rows:
+					var oneOpen = false
+					var anyBox = false
+					for box in row:
+						if !box.destroyed:
+							anyBox = true
+							if box.open:
+								if !oneOpen:
+									oneOpen = true
+								else:
+									oneOpen = false
+									break
+					if !oneOpen and anyBox:
+						canGo = false
+						break
+				return canGo
+			"magnifying":
+				return main.status_amount(StatusTypes.GOLD) >= 1
+			"moon":
+				return true
+			"otherworld":
+				return true
+			"payforreveals":
+				var valids = get_adjacent_boxes(true, false)
+				return valids.size() > 0 and main.status_amount(StatusTypes.GOLD) > 0
+			"payforshield":
+				var otherBoxIsOpen = false
+				for box in main.boxes:
+					if box.open and !box.destroyed and box != self:
+						otherBoxIsOpen = true
+						break
+				return main.status_amount(StatusTypes.GOLD) >= 1 and otherBoxIsOpen and customNum > 0
+			"portal":
+				return customNum > 0
+			"sacrifice":
+				return customNum > 0
+			"scrap":
+				return customNum > 0
+			"slots":
+				return main.status_amount(StatusTypes.GOLD) >= 2
+			"spendtowin":
+				return main.status_amount(StatusTypes.GOLD) >= 6
 	return false
 
 func on_self_clicked() -> void:
-	match id:
-		"quilt":
-			lg("Hexagonal perfect tapestry: you win!")
-			win()
-		"goldenbug":
-			var threshold = 1
-			var weapons = ["cannon", "sword", "wand"]
-			for box in main.boxes:
-				if weapons.has(box.id) and box.open and !box.destroyed:
-					threshold += 2
-			var roll = main.rng.randi_range(0, 9)
-			if threshold >= roll:
-				lg("Lucky! You've beaten the Monster Box!")
+	if bombs.has(id) and badgeEquipped("tnt"):
+		passin = true
+		on_other_box_opened(main.last_opened)
+	else:
+		match id:
+			"quilt":
+				lg("Hexagonal perfect tapestry: you win!")
 				win()
-			else:
-				lg("Unlucky! The Monster Box is destroyed!")
-				destroyBox()
-		"ritual":
-			for i in customNum:
-				main.reveal_random()
-			destroyBox()
-		"rowwin":
-			main.play_sfx(SFXTypes.ACTIVATE)
-			lg("Full row -> Horizontal Win! Nicely done!")
-			win()
-		"cannon":
-			main.play_sfx(SFXTypes.ACTIVATE)
-			for box in main.rows[row]:
-				if box.col > col and !box.destroyed:
-					box.destroyBox()
-					break
-		"cauldron":
-			main.play_sfx(SFXTypes.ACTIVATE)
-			for box in main.boxes:
-				if box.customNum >= 0 and box.get_node("Number").visible:
-					box.set_custom_num(box.customNum+1)
-					modStat("timesActivated", 1)
-			destroyBox()
-		"clock":
-			main.play_sfx(SFXTypes.ACTIVATE)
-			fNum = 0
-		"daredevil":
-			modStat("timesActivated", 1)
-			var result = main.rng.randi_range(0, 9)
-			main.play_sfx(SFXTypes.ACTIVATE)
-			if result <= 1:
-				lg("Lucky! Daredevil Box made you win!")
-				win()
-			elif result <= 4:
-				lg("Daredevil Box made you lose!")
-				lose()
-			else:
-				lg("Daredevil Box didn't do anything!")
-		"darts":
-			main.play_sfx(SFXTypes.ACTIVATE)
-			lg("More than 13 numbers - nice job!")
-			win()
-		"dice":
-			main.play_sfx(SFXTypes.ACTIVATE)
-			for box in get_adjacent_boxes(false, false):
-				var valids = []
-				for i in main.all_boxes:
-					if i != box.id and i != "max":
-						valids.append(i)
-				if valids.size() > 0:
-					box.loadType(valids.pick_random())
-			set_custom_num(customNum-1)
-		"doubleup":
-			main.play_sfx(SFXTypes.ACTIVATE)
-			lg("There are two identical boxes next to the Two Box! Nice!")
-			win()
-		"food":
-			main.play_sfx(SFXTypes.ACTIVATE)
-			for box in main.boxes:
-				if box.id == "starve" and box.open and box.customNum > -1 and !box.destroyed:
-					box.set_custom_num(7)
-			destroyBox()
-		"inferno":
-			main.play_sfx(SFXTypes.ACTIVATE)
-			lg("The board is awash with flame! Inferno Victory!")
-			win()
-		"ladder":
-			main.play_sfx(SFXTypes.ACTIVATE)
-			lg("A full ladder - well done! Ladder Victory!")
-			win()
-		"magnifying":
-			if main.status_amount(StatusTypes.GOLD) >= 1:
-				modStat("timesActivated", 1)
-				main.play_sfx(SFXTypes.ACTIVATE)
-				main.modStat("goldSpent", 1)
-				main.change_status_amount(StatusTypes.GOLD, -1)
-				main.reveal_random()
-		"moon":
-			main.play_sfx(SFXTypes.ACTIVATE)
-			for i in 5:
-				var valids = []
+			"goldenbug":
+				var threshold = 1
+				var weapons = ["cannon", "sword", "wand"]
 				for box in main.boxes:
-					if !box.destroyed and box.open and box != self:
-						valids.append(box)
-				if valids.size() > 0:
-					main.play_sfx(SFXTypes.ACTIVATE)
-					var toClose = valids.pick_random()
-					toClose.closeBox()
-			destroyBox()
-		"otherworld":
-			destroyBox()
-			for box in main.boxes:
-				if !box.destroyed and box.revealed:
+					if weapons.has(box.id) and box.open and !box.destroyed:
+						threshold += 2
+				var roll = main.rng.randi_range(0, 9)
+				if threshold >= roll:
+					lg("Lucky! You've beaten the Monster Box!")
+					win()
+				else:
+					lg("Unlucky! The Monster Box is destroyed!")
+					destroyBox()
+			"ritual":
+				for i in customNum:
+					main.reveal_random()
+				destroyBox()
+			"rowwin":
+				main.play_sfx(SFXTypes.ACTIVATE)
+				lg("Full row -> Horizontal Win! Nicely done!")
+				win()
+			"cannon":
+				main.play_sfx(SFXTypes.ACTIVATE)
+				for box in main.rows[row]:
+					if box.col > col and !box.destroyed:
+						box.destroyBox()
+						break
+			"cauldron":
+				main.play_sfx(SFXTypes.ACTIVATE)
+				for box in main.boxes:
+					if box.customNum >= 0 and box.get_node("Number").visible:
+						box.set_custom_num(box.customNum+1)
+						modStat("timesActivated", 1)
+				destroyBox()
+			"clock":
+				main.play_sfx(SFXTypes.ACTIVATE)
+				fNum = 0
+			"daredevil":
+				modStat("timesActivated", 1)
+				var result = main.rng.randi_range(0, 9)
+				main.play_sfx(SFXTypes.ACTIVATE)
+				if result <= 1:
+					lg("Lucky! Daredevil Box made you win!")
+					win()
+				elif result <= 4:
+					lg("Daredevil Box made you lose!")
+					lose()
+				else:
+					lg("Daredevil Box didn't do anything!")
+			"darts":
+				main.play_sfx(SFXTypes.ACTIVATE)
+				lg("More than 13 numbers - nice job!")
+				win()
+			"dice":
+				main.play_sfx(SFXTypes.ACTIVATE)
+				for box in get_adjacent_boxes(false, false):
 					var valids = []
 					for i in main.all_boxes:
 						if i != box.id and i != "max":
 							valids.append(i)
 					if valids.size() > 0:
 						box.loadType(valids.pick_random())
-		"payforreveals":
-			var valids = get_adjacent_boxes(true, false)
-			if valids.size() > 0:
-				if main.status_amount(StatusTypes.GOLD) > 0:
-					modStat("timesActivated", 1)
-					main.play_sfx(SFXTypes.ACTIVATE)
-					main.change_status_amount(StatusTypes.GOLD, -1)
-					main.modStat("goldSpent", 1)
-					var toReveal = valids.pick_random()
-					toReveal.revealBox()
-		"payforshield":
-			if main.status_amount(StatusTypes.GOLD) >= 1 and customNum > 0:
-				var valids = []
-				for box in main.boxes:
-					if !box.destroyed and box.open and box != self:
-						valids.append(box)
-				if valids.size() > 0:
-					modStat("timesActivated", 1)
-					main.play_sfx(SFXTypes.ACTIVATE)
-					main.change_status_amount(StatusTypes.GOLD, -1)
-					main.modStat("goldSpent", 1)
-					var toClose = valids.pick_random()
-					toClose.closeBox()
-					set_custom_num(customNum-1)
-		"portal":
-			if customNum > 0:
+				set_custom_num(customNum-1)
+			"doubleup":
 				main.play_sfx(SFXTypes.ACTIVATE)
-				main.add_status(StatusTypes.SWAP, 1)
-				for status in main.get_node("StatusList").get_children():
-					if status.type == StatusTypes.SWAP:
-						status.stored = self
-				set_custom_num(customNum - 1)
-		"puzzle":
-			modStat("timesActivated", 1)
-			main.play_sfx(SFXTypes.ACTIVATE)
-			if customNum >= 7:
-				lg("The puzzle is solved! You win... but at what cost?")
+				lg("There are two identical boxes next to the Two Box! Nice!")
 				win()
-			else:
-				for i in 7:
+			"food":
+				main.play_sfx(SFXTypes.ACTIVATE)
+				for box in main.boxes:
+					if box.id == "starve" and box.open and box.customNum > -1 and !box.destroyed:
+						box.set_custom_num(7)
+				destroyBox()
+			"inferno":
+				main.play_sfx(SFXTypes.ACTIVATE)
+				lg("The board is awash with flame! Inferno Victory!")
+				win()
+			"ladder":
+				main.play_sfx(SFXTypes.ACTIVATE)
+				lg("A full ladder - well done! Ladder Victory!")
+				win()
+			"magnifying":
+				if main.status_amount(StatusTypes.GOLD) >= 1:
+					modStat("timesActivated", 1)
+					main.play_sfx(SFXTypes.ACTIVATE)
+					main.modStat("goldSpent", 1)
+					main.change_status_amount(StatusTypes.GOLD, -1)
+					main.reveal_random()
+			"moon":
+				main.play_sfx(SFXTypes.ACTIVATE)
+				for i in 5:
+					var valids = []
+					for box in main.boxes:
+						if !box.destroyed and box.open and box != self:
+							valids.append(box)
+					if valids.size() > 0:
+						main.play_sfx(SFXTypes.ACTIVATE)
+						var toClose = valids.pick_random()
+						toClose.closeBox()
+				destroyBox()
+			"otherworld":
+				destroyBox()
+				for box in main.boxes:
+					if !box.destroyed and box.revealed:
+						var valids = []
+						for i in main.all_boxes:
+							if i != box.id and i != "max":
+								valids.append(i)
+						if valids.size() > 0:
+							box.loadType(valids.pick_random())
+			"payforreveals":
+				var valids = get_adjacent_boxes(true, false)
+				if valids.size() > 0:
+					if main.status_amount(StatusTypes.GOLD) > 0:
+						modStat("timesActivated", 1)
+						main.play_sfx(SFXTypes.ACTIVATE)
+						main.change_status_amount(StatusTypes.GOLD, -1)
+						main.modStat("goldSpent", 1)
+						var toReveal = valids.pick_random()
+						toReveal.revealBox()
+			"payforshield":
+				if main.status_amount(StatusTypes.GOLD) >= 1 and customNum > 0:
+					var valids = []
+					for box in main.boxes:
+						if !box.destroyed and box.open and box != self:
+							valids.append(box)
+					if valids.size() > 0:
+						modStat("timesActivated", 1)
+						main.play_sfx(SFXTypes.ACTIVATE)
+						main.change_status_amount(StatusTypes.GOLD, -1)
+						main.modStat("goldSpent", 1)
+						var toClose = valids.pick_random()
+						toClose.closeBox()
+						set_custom_num(customNum-1)
+			"portal":
+				if customNum > 0:
+					main.play_sfx(SFXTypes.ACTIVATE)
+					main.add_status(StatusTypes.SWAP, 1)
+					for status in main.get_node("StatusList").get_children():
+						if status.type == StatusTypes.SWAP:
+							status.stored = self
+					set_custom_num(customNum - 1)
+			"puzzle":
+				modStat("timesActivated", 1)
+				main.play_sfx(SFXTypes.ACTIVATE)
+				if customNum >= 7:
+					lg("The puzzle is solved! You win... but at what cost?")
+					win()
+				else:
+					for i in 7:
+						var thingy = main
+						var toChange = thingy.get_random_box()
+						main.destroy_box(toChange)
+					if customNum == -1:
+						set_custom_num(1)
+					else:
+						set_custom_num(customNum + 1)
+			"sacrifice":
+				if customNum > 0:
+					modStat("timesActivated", 1)
+					main.play_sfx(SFXTypes.ACTIVATE)
 					var thingy = main
 					var toChange = thingy.get_random_box()
 					main.destroy_box(toChange)
-				if customNum == -1:
-					set_custom_num(1)
-				else:
-					set_custom_num(customNum + 1)
-		"sacrifice":
-			if customNum > 0:
+					thingy.reveal_random()
+					set_custom_num(customNum - 1)
+			"scrap":
+				main.play_sfx(SFXTypes.ACTIVATE)
 				modStat("timesActivated", 1)
-				main.play_sfx(SFXTypes.ACTIVATE)
-				var thingy = main
-				var toChange = thingy.get_random_box()
-				main.destroy_box(toChange)
-				thingy.reveal_random()
-				set_custom_num(customNum - 1)
-		"scrap":
-			main.play_sfx(SFXTypes.ACTIVATE)
-			modStat("timesActivated", 1)
-			main.reveal_random()
-			set_custom_num(customNum-1)
-		"slots":
-			if main.status_amount(StatusTypes.GOLD) >= 2:
-				modStat("timesActivated", 1)
-				main.play_sfx(SFXTypes.ACTIVATE)
-				main.change_status_amount(StatusTypes.GOLD, -2)
-				main.modStat("goldSpent", 2)
-				for i in 4:
-					var valids = []
-					for box in main.boxes:
-						if box.id != "winner" and !box.destroyed and !box.revealed:
-							valids.append(box)
-					if valids.size() > 0:
-						var toChange = valids.pick_random()
-						toChange.loadType("winner")
-		"spendtowin":
-			if main.status_amount(StatusTypes.GOLD) >= 6:
-				lg("Pay to win!")
-				main.play_sfx(SFXTypes.ACTIVATE)
-				main.change_status_amount(StatusTypes.GOLD, -6)
-				main.modStat("goldSpent", 6)
-				win()
+				main.reveal_random()
+				set_custom_num(customNum-1)
+			"slots":
+				if main.status_amount(StatusTypes.GOLD) >= 2:
+					modStat("timesActivated", 1)
+					main.play_sfx(SFXTypes.ACTIVATE)
+					main.change_status_amount(StatusTypes.GOLD, -2)
+					main.modStat("goldSpent", 2)
+					for i in 4:
+						var valids = []
+						for box in main.boxes:
+							if box.id != "winner" and !box.destroyed and !box.revealed:
+								valids.append(box)
+						if valids.size() > 0:
+							var toChange = valids.pick_random()
+							toChange.loadType("winner")
+			"spendtowin":
+				if main.status_amount(StatusTypes.GOLD) >= 6:
+					lg("Pay to win!")
+					main.play_sfx(SFXTypes.ACTIVATE)
+					main.change_status_amount(StatusTypes.GOLD, -6)
+					main.modStat("goldSpent", 6)
+					win()
 	pass
 
 func can_destroy(forshow) -> bool:
+	if main.big_bossfight:
+		return true
 	match id:
 		"bedrock":
 			if open:
@@ -1867,13 +1979,15 @@ func destroyBox():
 		visible = false
 		#modulate.a = 0.025
 		hide_custom_num()
-		on_destroy()
-		for box in main.boxes:
-			if box.open and not box.destroyed and main.gameRunning:
-				box.on_other_box_destroyed(self)
-		main.modStat("destroys", 1)
-		for badge in main.get_node("AchievementsContainer").get_children():
-			badge.postDestroyBox(self)
+		if !main.big_bossfight:
+			on_destroy()
+			for box in main.boxes:
+				if box.open and not box.destroyed and main.gameRunning:
+					box.on_other_box_destroyed(self)
+			main.modStat("destroys", 1)
+			main.modBoxStat(id, "timesDestroyed", 1)
+			for badge in main.get_node("AchievementsContainer").get_children():
+				badge.postDestroyBox(self)
 
 func reviveBox():
 	if destroyed:
@@ -2035,6 +2149,14 @@ func addText() -> String:
 			var result = " The box name is: " + secondStr
 			return result
 	return ""
+
+static var numZero = preload("res://numberImgs/zero.png")
+static var numOne = preload("res://numberImgs/one.png")
+static var numTwo = preload("res://numberImgs/two.png")
+static var numThree = preload("res://numberImgs/three.png")
+static var numFour = preload("res://numberImgs/four.png")
+static var numFive = preload("res://numberImgs/five.png")
+static var numSix = preload("res://numberImgs/six.png")
 
 static var cursorTransmog = preload("res://cursorImgs/cursorTransmog.png")
 static var cursorDestroy = preload("res://cursorImgs/cursorDestroy.png")
@@ -2410,13 +2532,7 @@ func on_other_box_click_activated(box) -> void:
 
 func postTransform():
 	if open:
-		match id:
-			"compass":
-				on_open()
-			"music":
-				on_open()
-			"loot":
-				on_open()
+		setupSpecial()
 	pass
 
 #static var imgTable = {

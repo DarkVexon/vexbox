@@ -42,6 +42,8 @@ var boxesHolderOrigPosX = 400
 var boxesHolderOrigPosY = 50
 var boxesScale : float = 1
 
+var lastNResults = []
+
 func _init() -> void:
 	Box.main = self
 	Badge.main = self
@@ -70,7 +72,8 @@ func save():
 		"statsMap": statsMap,
 		"unlockedBadges": unlockedBadges,
 		"equippedBadges": equippedBadges,
-		"losses": losses
+		"losses": losses,
+		"lastNResults": lastNResults
 	}
 	var json_string = JSON.stringify(save_dict)
 	save_file.store_line(json_string)
@@ -89,12 +92,12 @@ func load_save():
 	var data = json.data
 	for key in data.keys():
 			set(key, data[key])
-	unlockedRows = 18
 	unlockedBoxes = (unlockedRows * (unlockedRows + 1)) / 2
 	$NumWinsText.text = ": " + str(wins)
 	$WinstreakText.text = "Winstreak: " + str(winstreak)
 	$BestWinstreakText.text = "Best Winstreak: " + str(bestWinstreak)
 	$WinsToNextText.text = "Reach " + str(winsToNext) + " wins for a NEW ROW." 
+	$WinPercentText.text = "Winrate (Last 50 Games): " + str(calcWinrate()) + "%"
 
 func _ready():
 	#for id in all_boxes:
@@ -195,6 +198,8 @@ func startGame():
 		badge.onRunStart()
 	$AchievementsFront.modulate.a = 0
 	update_stat_texts()
+	#for box in boxes:
+		#box.revealBox()
 	#var end = Time.get_ticks_usec()
 	#var worker_time = (end-start)/1000000.0	
 	#print(worker_time)
@@ -219,6 +224,9 @@ func add_status(statusType, amount):
 		var instance = statusScene.instantiate()
 		instance.setup(statusType, amount)
 		$StatusList.add_child(instance)
+	if statusType == StatusTypes.GOLD:
+		for badge in $AchievementsContainer.get_children():
+			badge.onGainGold(amount) 
 
 func trigger_on_click():
 	for status in $StatusList.get_children():
@@ -341,6 +349,10 @@ func internal_win():
 	$AchievementsFront.modulate.a = 0
 	$GameStatusText.text = "You won!"
 	wins += 1
+	lastNResults.append("W")
+	if lastNResults.size() > 50:
+		lastNResults.pop_front()
+	$WinPercentText.text = "Winrate (Last 50 Games): " + str(calcWinrate()) + "%"
 	if wins >= winsToNext and unlockedRows < MAX_ROWS:
 		unlockedRows += 1
 		winsToNext += fib(unlockedRows)
@@ -352,6 +364,7 @@ func internal_win():
 	if (winstreak > bestWinstreak):
 		bestWinstreak = winstreak;
 		$BestWinstreakText.text = "Best Winstreak: " + str(bestWinstreak)
+	$WinPercentText.text = "Winrate (Last 50 Games): " + str(calcWinrate()) + "%"
 	after_game_over()
 
 func reset_winstreak():
@@ -361,6 +374,10 @@ func reset_winstreak():
 func internal_loss():
 	$LossFXPlayer.play()
 	lost = true
+	lastNResults.append("L")
+	if lastNResults.size() > 50:
+		lastNResults.pop_front()
+	$WinPercentText.text = "Winrate (Last 50 Games): " + str(calcWinrate()) + "%"
 	$ColorRect.color = Color(0.33, 0.2, 0.2, 1)
 	qLog("You lost!")
 	losses += 1
@@ -478,6 +495,10 @@ func resetGame():
 	if resetTimer <= 0:
 		resetTimer = 0.1
 		reset_winstreak()
+		lastNResults.append("R")
+		if lastNResults.size() > 50:
+			lastNResults.pop_front()
+		$WinPercentText.text = "Winrate (Last 50 Games): " + str(calcWinrate()) + "%"
 		startGame()
 
 var already_played = []
@@ -668,7 +689,7 @@ func modStat(id, val):
 		statsMap[id] = val
 
 func initBoxStats(boxid):
-	statsMap[boxid] = {"opens": 0, "wins": 0, "losses": 0, "timesActivated": 0}
+	statsMap[boxid] = {"opens": 0, "wins": 0, "losses": 0, "timesActivated": 0, "timesDestroyed": 0}
 	pass
 
 func getBoxStat(boxid, id):
@@ -730,3 +751,29 @@ func hasBadge(id):
 
 func _on_options_button_pressed() -> void:
 	$OptionsMenu.show_options()
+
+func calcWinrate():
+	var total = min(50, lastNResults.size())
+	var winCount = 0
+	for game in lastNResults:
+		if game == "W":
+			winCount += 1
+	if total == 0:
+		return 100
+	else:
+		var rate = (float(winCount) / float(total)) 
+		return snapped(rate, 0.001) * 100
+
+func goodRandom(max, lim):
+	var roll = rng.randi_range(0, max-1)
+	if roll <= lim:
+		return true
+	else:
+		return false
+
+func badRandom(max, lim):
+	var roll = rng.randi_range(0, max-1)
+	if roll <= lim:
+		return true
+	else:
+		return false
