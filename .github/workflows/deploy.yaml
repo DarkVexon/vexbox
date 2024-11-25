@@ -32,6 +32,8 @@ jobs:
     with:
       game_name: VexBox
       version: ${{ needs.extract-version.outputs.version }}
+    permissions: 
+      contents: write
     secrets:
       USER: ${{ secrets.USER }}
       API_KEY: ${{ secrets.API_KEY }}
