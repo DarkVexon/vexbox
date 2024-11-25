@@ -543,7 +543,7 @@ id = "minesweeper"
 
 [node name="Hints 5 and Ten" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
 layout_mode = 2
-id = "hints5andTen"
+id = "hints"
 
 [node name="Scope" parent="AchievementsContainer" instance=ExtResource("16_w7hqe")]
 layout_mode = 2

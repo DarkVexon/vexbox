@@ -479,9 +479,9 @@ badge.superhungry.unlock;Consuming Box has destroyed 50 boxes.
 badge.minesweeper.name;Minesweeper
 badge.minesweeper.desc;Start Of Run: Transform 3 random boxes into Sweeper Boxes and 3 into Winseeker Boxes.
 badge.minesweeper.unlock;Open a total of 50 Minesweeper and Sweeper Boxes.
-badge.hints5andTen.name;Hints! 5 + Ten
-badge.hints5andTen.desc;Reveal which boxes are in rows 5 and ten, but not where.
-badge.hints5andTen.unlock;Win 100 runs.
+badge.hints.name;Hints! 5 + Ten
+badge.hints.desc;Reveal which boxes are in rows 5 and ten, but not where.
+badge.hints.unlock;Win 100 runs.
 badge.scope.name;Scope
 badge.scope.desc;Double the effects of the Seer, Info and Three-D Boxes.
 badge.scope.unlock;Have 100 boxes revealed at once.
